@@ -1,0 +1,19 @@
+Dockerfile
+.dockerignore
+node_modules
+npm-debug.log
+dist
+
+
+// File .dockerignore là một file đặc biệt trong dự án Docker, nó được sử dụng để chỉ định các tệp và thư mục không nên được bao gồm trong quá trình xây dựng hình ảnh Docker. Khi bạn chạy lệnh docker build, Docker sẽ sử dụng file .dockerignore để quyết định xem những gì nên hoặc không nên được bao gồm trong quá trình xây dựng hình ảnh.
+
+// Trong trường hợp của bạn, nội dung của file .dockerignore là:
+// node_modules
+// npm-debug.log
+// dist
+// Điều này có nghĩa là trong quá trình xây dựng hình ảnh Docker:
+
+// Docker sẽ bỏ qua tất cả các thư mục và tệp tin trong thư mục "node_modules".
+// Docker cũng sẽ bỏ qua bất kỳ tệp nhật ký debug của npm nào (npm-debug.log).
+// Cuối cùng, Docker cũng sẽ bỏ qua thư mục "dist".
+// Những tệp và thư mục này thường không cần thiết trong quá trình xây dựng hình ảnh Docker và có thể làm cho quá trình này chậm hơn hoặc tạo ra hình ảnh lớn hơn nếu chúng được bao gồm. Bằng cách sử dụng file .dockerignore, bạn có thể loại bỏ chúng khỏi quá trình xây dựng mà không cần phải thay đổi cấu trúc của dự án.
