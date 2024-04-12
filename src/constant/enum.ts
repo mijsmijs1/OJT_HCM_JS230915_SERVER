@@ -1,10 +1,10 @@
 export enum UserRole {
   ADMIN,
   GUEST,
-  CUSTOMER 
+  CUSTOMER
 }
 
-export enum UserGender{
+export enum CandidateGender {
   MALE,
   FEMALE,
   OTHER
