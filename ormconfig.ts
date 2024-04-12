@@ -10,7 +10,7 @@ const config: MysqlConnectionOptions = {
   host: process.env.DB_HOST || 'localhost',
   port: +process.env.DB_PORT || 3306,
   username: process.env.DB_USERNAME || 'root',
-  password: process.env.DB_PASSWORD || 'password',
+  password: process.env.DB_PASSWORD || '',
   type: 'mysql',
   database: process.env.DB_NAME || 'database-name',
   entities: [__dirname + '/**/**/**/*.entity{.ts,.js}'], //entities: [__dirname + '/**/**/**/*.entity{.ts,.js}']: Đây là cách TypeORM tìm kiếm và xác định các entities trong ứng dụng. Trong đó:// __dirname: Biến toàn cục trong Node.js, đại diện cho đường dẫn thư mục hiện tại của file JavaScript.// /**/**/**/*.entity{.ts,.js }: Một biểu thức chính quy (glob pattern) cho phép TypeORM tìm kiếm các file.entity.ts hoặc.entity.js trong tất cả các thư mục con của thư mục hiện tại.Điều này cho phép TypeORM tìm thấy và tải các file entity mà bạn đã định nghĩa trong ứng dụng của mình.Entity là các đối tượng JavaScript đại diện cho các bảng trong cơ sở dữ liệu.
