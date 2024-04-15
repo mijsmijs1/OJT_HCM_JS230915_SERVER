@@ -1,6 +1,8 @@
 {
     "auth": {
         "registerOk": "Register successfull.",
-        "loginOk": "Login successfull"
+        "loginOk": "Login successfull",
+        "LogoutOk": "Logout successfull",
+        "refreshTokenOk": "Refresf new token successfull"
     }
 }

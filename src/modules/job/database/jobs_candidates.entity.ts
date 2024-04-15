@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Job } from "./job.entity";
-import { Candidate } from "src/modules/candidate/database/candidate .entity";
+import { Candidate } from "src/modules/candidate/database/candidate.entity";
 
 @Entity()
 export class Jobs_Candidates {
