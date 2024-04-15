@@ -1,4 +1,4 @@
-import { CandidateGender, UserRole } from 'src/constant/enum';
+import { CandidateGender, Role } from 'src/constant/enum';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
 @Entity()
@@ -21,8 +21,8 @@ export class User {
   @Column({ nullable: true })
   address: string;
 
-  @Column({ default: UserRole.GUEST })
-  role: UserRole;
+  @Column({ default: Role.candidate })
+  role: Role;
 
   @Column({ default: 'http://surl.li/rrtgf' }) // Giá trị mặc định là 'default-avatar.jpg'
   avatar: string;

@@ -24,7 +24,7 @@ export class Candidate {
     @Column({ default: 0 })
     isOpen: number;
 
-    @Column({ type: 'timestamp' })
+    @Column({ type: 'timestamp', nullable: true })
     dob: Date;
 
     @Column({ type: 'varchar', nullable: true })
