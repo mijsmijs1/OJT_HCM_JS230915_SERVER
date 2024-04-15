@@ -1,6 +1,6 @@
 {
     "auth": {
-        "registerOk": "Register successfull."
-        
+        "registerOk": "Register successfull.",
+        "loginOk": "Login successfull"
     }
 }

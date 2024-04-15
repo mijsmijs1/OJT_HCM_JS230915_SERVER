@@ -3,7 +3,11 @@
         "required": "This field is required",
         "minLength": "This field must be at least $constraint1 characters long",
         "existingRegisterInfo": "The account has existed with the username or email name.",
-        "databaseConnectFailed": "Failed to connect database."
+        "databaseConnectFailed": "Failed to connect database.",
+        "notFoundAccountByEmail": "Not found account by email",
+        "passwordIncorret": "Your password is incorrect.",
+        "lookedAccount": "Your account has been locked",
+        "serverError": "Server Error!"
     },
     "validation": {
         "IsNotEmpty": "This field cannot be empty.",

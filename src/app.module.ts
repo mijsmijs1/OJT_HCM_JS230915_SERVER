@@ -29,7 +29,7 @@ import { join } from 'path';
         new HeaderResolver(['x-lang']),
       ]
     }),
-    
+
     UserModule,
     CompanyModule,
     JobModule,
