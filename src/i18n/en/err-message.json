@@ -1,0 +1,13 @@
+{
+    "errors": {
+        "required": "This field is required",
+        "minLength": "This field must be at least $constraint1 characters long",
+        "existingRegisterInfo": "The account has existed with the username or email name.",
+        "databaseConnectFailed": "Failed to connect database."
+    },
+    "validation": {
+        "IsNotEmpty": "This field cannot be empty.",
+        "IsEmail": "This field must be email.",
+        "MinLength6": "This field must be exactly 6 characters long."
+    }
+}

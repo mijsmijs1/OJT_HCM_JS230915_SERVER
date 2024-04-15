@@ -1,7 +1,6 @@
-export enum UserRole {
-  ADMIN,
-  GUEST,
-  CUSTOMER
+export enum Role {
+  company,
+  candidate
 }
 
 export enum CandidateGender {

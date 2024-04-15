@@ -1,0 +1,11 @@
+{
+    "NOT_EMPTY": "{property} cannot be empty",
+    "INVALID_EMAIL": "email is invalid",
+    "INVALID_BOOLEAN": "{property} is not a boolean",
+    "INVALID_STRING": "{property} is not a string",
+    "MIN": "{property} with value: \"{value}\" needs to be at least {constraints.0}, ow and {message}",
+    "MAX": "{property} with value: \"{value}\" needs to be less than {constraints.0}, ow and {message}",
+    "MINLENGTH": "The {property} with the value \"{value}\" must contain at least {constraints.0} characters.",
+    "MAXLENGTH": "The {property} with the value \"{value}\" must not exceed {constraints.0} characters.",
+    "COMMON_ERROR": "Lack of compulsory registration information or invalid information."
+}
