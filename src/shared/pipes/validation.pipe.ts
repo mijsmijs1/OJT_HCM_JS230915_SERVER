@@ -6,11 +6,6 @@ import {
 } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
-
-function toValidate(metatype: Function): boolean {
-  const types: Function[] = [String, Boolean, Number, Array, Object];
-  return !types.includes(metatype);
-}
 //
 // Hàm toValidate nhận một tham số là metatype, đại diện cho kiểu dữ liệu của một thuộc tính trong class DTO (Data Transfer Object). Ý nghĩa của hàm này là kiểm tra xem kiểu dữ liệu của thuộc tính có thuộc vào danh sách các kiểu dữ liệu cơ bản hay không. Dưới đây là giải thích chi tiết:
 
@@ -19,6 +14,11 @@ function toValidate(metatype: Function): boolean {
 // types: Mảng này chứa các kiểu dữ liệu cơ bản mà chúng ta không cần thực hiện validation sâu hơn, bao gồm String, Boolean, Number, Array, và Object.
 
 // return value: Hàm này trả về true nếu metatype không thuộc vào danh sách các kiểu dữ liệu cơ bản, và false nếu metatype thuộc vào danh sách đó.
+function toValidate(metatype: Function): boolean {
+  const types: Function[] = [String, Boolean, Number, Array, Object];
+  return !types.includes(metatype);
+}
+
 @Injectable()
 export class ValidationBodyPipe implements PipeTransform<any> {
   async transform(value: any, { metatype, type }: ArgumentMetadata) {
