@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Candidate } from '../candidate/database/candidate .entity';
+import { Candidate } from '../candidate/database/candidate.entity';
 import { Repository } from 'typeorm';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { RegisterAuthDTO } from './dtos/register-auth.dto';

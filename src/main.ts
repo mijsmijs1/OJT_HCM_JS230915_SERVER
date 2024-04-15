@@ -1,6 +1,6 @@
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
-import {  HttpStatus, VersioningType } from '@nestjs/common';
+import { HttpStatus, VersioningType } from '@nestjs/common';
 import { useContainer } from 'typeorm';
 import { SwaggerModule } from '@nestjs/swagger';
 import config from './config/swagger-config';
@@ -11,6 +11,7 @@ import * as admin from 'firebase-admin';
 import { ConfigService } from '@nestjs/config';
 import { ServiceAccount } from 'firebase-admin';
 import { I18nMiddleware, I18nValidationExceptionFilter, I18nValidationPipe } from 'nestjs-i18n';
+import { RedisService } from './shared/utils/redis/redis';
 
 async function bootstrap() {
   const PORT = process.env.PORT || 8080;

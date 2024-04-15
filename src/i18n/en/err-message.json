@@ -7,7 +7,8 @@
         "notFoundAccountByEmail": "Not found account by email",
         "passwordIncorret": "Your password is incorrect.",
         "lookedAccount": "Your account has been locked",
-        "serverError": "Server Error!"
+        "serverError": "Server Error!",
+        "TokenInvalid": "Token Invalid!"
     },
     "validation": {
         "IsNotEmpty": "This field cannot be empty.",

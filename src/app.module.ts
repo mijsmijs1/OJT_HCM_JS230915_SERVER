@@ -9,6 +9,7 @@ import { CandidateModule } from './modules/candidate/candidate.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { AcceptLanguageResolver, HeaderResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
 import { join } from 'path';
+import { RedisService } from './shared/utils/redis/redis';
 
 
 @Module({
@@ -29,7 +30,6 @@ import { join } from 'path';
         new HeaderResolver(['x-lang']),
       ]
     }),
-
     UserModule,
     CompanyModule,
     JobModule,
@@ -37,6 +37,6 @@ import { join } from 'path';
     AuthModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [RedisService],
 })
 export class AppModule { }

@@ -3,7 +3,7 @@ import { Location } from "src/modules/company/database/location.entity";
 import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { TypeJob } from "./typeJob.entity";
 import { LevelJob } from "./levelJob.entity";
-import { Candidate } from "src/modules/candidate/database/candidate .entity";
+import { Candidate } from "src/modules/candidate/database/candidate.entity";
 
 @Entity()
 export class Job {
