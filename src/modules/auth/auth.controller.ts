@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Patch, Post, Req, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
@@ -15,6 +15,7 @@ import { MailService } from 'src/shared/utils/mail/mail.service';
 import * as ejs from "ejs";
 import * as path from 'path';
 import { ChangePasswordDTO } from './dtos/change-password.dto';
+import { UpdateCandidateDTO } from './dtos/update-account.dto';
 
 @ApiTags('Auth')
 @ApiBearerAuth()
@@ -108,7 +109,7 @@ export class AuthController {
   async changePassword(@Req() req: RequestToken, @Body() body: ChangePasswordDTO, @Res() res: Response) {
     try {
       console.log(req.tokenData)
-      if (req.tokenData.password != body.oldPassword) {
+      if (SecureUtils.comparePasswords(body.oldPassword, req.tokenData.password)) {
         throw new HttpException(this.i18n.t('err-message.errors.oldPasswordInvalid', { lang: I18nContext.current().lang }), HttpStatus.BAD_REQUEST, { cause: 'Bad Request' })
       }
       let result = await this.authService.update(req.tokenData.id, { password: body.newPassword }, 'all')
@@ -121,6 +122,23 @@ export class AuthController {
         return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
       }
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t('err-message.errors.serverError', { lang: I18nContext.current().lang }), error: 'InternalServerError' })
+    }
+  }
+  @Patch('update-candidate-account')
+  async updateAccount(@Req() req: RequestToken, @Body() body: UpdateCandidateDTO, @Res() res: Response) {
+    try {
+      let result = await this.authService.update(req.tokenData.id, body, "candidate")
+      if (result) {
+        let newCandidate = await this.authService.findById(req.tokenData.id, 'candidate')
+        if (newCandidate) {
+          return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.auth.updateAccountOK', { lang: I18nContext.current().lang }), data: { ...body, updated_at: newCandidate.updated_at }, accessToken: token.createToken(newCandidate), refreshToken: token.createRefreshToken(newCandidate) })
+        }
+      }
+    } catch (err) {
+      if (err instanceof HttpException) {
+        return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
+      }
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
     }
   }
   @Get('/logout')
@@ -169,7 +187,7 @@ export class AuthController {
   @Get('/send-new-password')
   async sendNewPassword(@Req() req: RequestToken, @Res() res: Response) {
     try {
-      let result = await this.authService.update(Number(req.tokenData.id), { password: req.query.newPassword }, String(req.query.role))
+      let result = await this.authService.update(Number(req.tokenData.id), { password: await SecureUtils.hashPassword(String(req.query.newPassword)) }, String(req.query.role))
       if (result) {
         return res.status(HttpStatus.OK).send(`Your new password is: "${req.query.newPassword}"`)
       }
