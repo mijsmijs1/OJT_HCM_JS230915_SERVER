@@ -7,6 +7,7 @@ import { RegisterAuthDTO } from './dtos/register-auth.dto';
 import { Role } from 'src/constant/enum';
 import { Company } from '../company/database/company.entity';
 import { Account_Company } from '../company/database/account_company.entity';
+import { SecureUtils } from 'src/shared/utils/secure.util';
 
 
 @Injectable()
@@ -27,7 +28,8 @@ export class AuthService {
             if (existingEmail) {
                 throw new HttpException(this.i18n.t('err-message.errors.existingRegisterInfo', { lang: I18nContext.current().lang }), HttpStatus.CONFLICT, { cause: "Conflict" })
             }
-            const newCandidate = await this.candidateRespository.create({ ...registerData })
+            const password = await SecureUtils.hashPassword(registerData.password) as string
+            const newCandidate = await this.candidateRespository.create({ ...registerData, password })
             await this.candidateRespository.save(newCandidate)
             return newCandidate
         } catch (error) {
@@ -130,6 +132,25 @@ export class AuthService {
                 return candidate;
             }
         } catch (error) {
+            if (error instanceof HttpException) {
+                throw error
+            } else {
+                throw new HttpException(this.i18n.t('err-message.errors.databaseConnectFailed', { lang: I18nContext.current().lang }), HttpStatus.BAD_GATEWAY, { cause: "Bad Gateway" })
+            }
+
+        }
+    }
+    async delete(id: number, role: string) {
+        try {
+            if (Role[role] == Role.candidate) {
+                await this.candidateRespository.delete(id)
+                return true
+            }
+            if (Role[role] == Role.company) {
+                throw new HttpException(this.i18n.t('err-message.errors.PermissionInvalid', { lang: I18nContext.current().lang }), HttpStatus.FORBIDDEN, { cause: "Forbiden" })
+            }
+        } catch (error) {
+            console.log(error)
             if (error instanceof HttpException) {
                 throw error
             } else {

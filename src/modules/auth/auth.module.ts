@@ -25,6 +25,7 @@ export class AuthModule implements NestModule {
         { path: "auth/send-new-password", method: RequestMethod.GET, version: '1' },
         { path: "auth/change-password", method: RequestMethod.POST, version: '1' },
         { path: "auth/update-candidate-account", method: RequestMethod.PATCH, version: '1' },
+        { path: "auth/delete-account", method: RequestMethod.DELETE, version: '1' },
       )
   }
 }

@@ -13,11 +13,19 @@ export const token = {
         try {
             let data = verify(token, process.env.TOKEN_KEY);
             if (data) {
-                return data;
+                return data; // Token được giải mã thành công
+            } else {
+                // Trường hợp token không giải mã được do sai mã
+                return false;
             }
-            return false;
         } catch (err) {
-            return false;
+            if (err.name === 'TokenExpiredError') {
+                // Trường hợp token không giải mã được do hết hạn
+                return 'expired';
+            } else {
+                // Trường hợp xảy ra lỗi khi giải mã token
+                return false;
+            }
         }
     },
     decodeRefreshToken: (refreshToken: string) => {

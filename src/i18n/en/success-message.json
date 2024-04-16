@@ -6,6 +6,8 @@
         "refreshTokenOk": "Refresf new token successfull",
         "sendEmailSuccess": "Send Email Successfull",
         "changePasswordOK": "Change password Successfull",
-        "updateAccountOK":"Update Account Successfull"
+        "updateAccountOK": "Update Account Successfull",
+        "deleteAccountOK": "Delete Account Successfull",
+        "decodeTokenOK": "Decoded Token Successfull"
     }
 }
