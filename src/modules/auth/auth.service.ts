@@ -39,6 +39,32 @@ export class AuthService {
         }
     }
 
+    async update(id: number, updateData: any, role: string) {
+        try {
+            if (Role[role] == Role.candidate) {
+                const updatedCandidate = await this.candidateRespository.update(id, updateData)
+                if (updatedCandidate) {
+                    return updatedCandidate;
+                }
+                throw new HttpException(this.i18n.t('err-message.errors.NotFound', { lang: I18nContext.current().lang }), HttpStatus.NOT_FOUND, { cause: "Not Found" })
+            } else if (Role[role] == Role.company) {
+                const updatedCompanyAccount = await this.accountCompanyRespository.update(id, updateData)
+                if (updatedCompanyAccount) {
+                    return updatedCompanyAccount;
+                }
+                throw new HttpException(this.i18n.t('err-message.errors.NotFound', { lang: I18nContext.current().lang }), HttpStatus.NOT_FOUND, { cause: "Not Found" })
+            }
+
+        } catch (error) {
+            console.log(error)
+            if (error instanceof HttpException) {
+                throw error; // Re-throw the existing HttpException
+            } else {
+                throw new HttpException(this.i18n.t('err-message.errors.databaseConnectFailed', { lang: I18nContext.current().lang }), HttpStatus.BAD_GATEWAY, { cause: "Bad Gateway" })
+            }
+        }
+    }
+
     async findByEmail(email: string, role: string) {
         try {
             if (Role[role] == Role.candidate) {
@@ -54,6 +80,17 @@ export class AuthService {
                     throw new HttpException(this.i18n.t('err-message.errors.notFoundAccountByEmail', { lang: I18nContext.current().lang }), HttpStatus.NOT_FOUND, { cause: "Not Found" })
                 }
                 return company
+            }
+            if (role == 'all') {
+                let candidate = await this.candidateRespository.findOneBy({ email })
+                if (!candidate) {
+                    let company = await this.accountCompanyRespository.findOneBy({ email })
+                    if (!company) {
+                        throw new HttpException(this.i18n.t('err-message.errors.notFoundAccountByEmail', { lang: I18nContext.current().lang }), HttpStatus.NOT_FOUND, { cause: "Not Found" })
+                    }
+                    return company
+                }
+                return candidate;
             }
         } catch (error) {
             if (error instanceof HttpException) {

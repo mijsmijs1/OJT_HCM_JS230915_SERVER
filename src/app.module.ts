@@ -10,6 +10,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { AcceptLanguageResolver, HeaderResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
 import { join } from 'path';
 import { RedisService } from './shared/utils/redis/redis';
+import { MailService } from './shared/utils/mail/mail.service';
 
 
 @Module({
@@ -37,6 +38,6 @@ import { RedisService } from './shared/utils/redis/redis';
     AuthModule,
   ],
   controllers: [],
-  providers: [RedisService],
+  providers: [RedisService, MailService],
 })
 export class AppModule { }

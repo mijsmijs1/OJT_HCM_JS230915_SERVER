@@ -41,7 +41,7 @@ export class AuthenticateJWTMiddleware {
   async use(@Req() req: RequestToken, @Res() res: Response, @Next() next: NextFunction) {
     try {
       let tokenCode: string = req.header('Authorizarion')?.replace('Bearer ', '') || req.query.token || req.cookies.token;
-      if (!tokenCode) {
+      if (!tokenCode || tokenCode == 'undefined') {
         return res.status(HttpStatus.UNAUTHORIZED).json({ message: this.i18n.t('err-message.errors.TokenInvalid', { lang: I18nContext.current().lang }), error: 'Unauthorized' })
       }
       const inDenyList = await this.redisService.redisClient.get(`bl_${tokenCode}`);
@@ -57,22 +57,19 @@ export class AuthenticateJWTMiddleware {
         req.tokenData = JSON.parse(dataFromRedis);
         next();
       } else {
-        let result = this.authService.findByEmail((decodedData as any).email, "candidate");
+        let result = this.authService.findByEmail((decodedData as any).email, "all");
         if (!result) {
-          result = this.authService.findByEmail((decodedData as any).email, "company");
-          if (!result) {
-            return res.status(HttpStatus.UNAUTHORIZED).json({ message: this.i18n.t('err-message.errors.TokenInvalid', { lang: I18nContext.current().lang }), error: 'Unauthorized' })
-          }
+          return res.status(HttpStatus.UNAUTHORIZED).json({ message: this.i18n.t('err-message.errors.TokenInvalid', { lang: I18nContext.current().lang }), error: 'Unauthorized' })
         }
         if ((decodedData as any).updateAt != (result as any).updateAt) {
           return res.status(HttpStatus.UNAUTHORIZED).json({ message: this.i18n.t('err-message.errors.TokenInvalid', { lang: I18nContext.current().lang }), error: 'Unauthorized' })
         }
-        this.redisService.redisClient.setex(tokenCode, (decodedData as any).exp, JSON.stringify(result))
+        this.redisService.redisClient.set(tokenCode, (decodedData as any).exp, JSON.stringify(result))
         req.tokenData = decodedData;
         next();
       }
     } catch (err) {
-      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t('err-message.errors.serverError', { lang: I18nContext.current().lang }), error: 'InternalServerError' })
+      return res.status(HttpStatus.UNAUTHORIZED).json({ message: this.i18n.t('err-message.errors.TokenInvalid', { lang: I18nContext.current().lang }), error: 'Unauthorized' })
     }
   }
 }
