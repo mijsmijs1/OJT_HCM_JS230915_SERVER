@@ -61,6 +61,9 @@ export class AuthenticateJWTMiddleware {
         if (!result) {
           return res.status(HttpStatus.UNAUTHORIZED).json({ message: this.i18n.t('err-message.errors.TokenInvalid', { lang: I18nContext.current().lang }), error: 'Unauthorized' })
         }
+        if ((result as any).name && !(result as any).isOpen) {
+          return res.status(HttpStatus.UNAUTHORIZED).json({ message: this.i18n.t('err-message.errors.TokenInvalid', { lang: I18nContext.current().lang }), error: 'Unauthorized' })
+        }
         if ((decodedData as any).updateAt != (result as any).updateAt) {
           return res.status(HttpStatus.UNAUTHORIZED).json({ message: this.i18n.t('err-message.errors.TokenInvalid', { lang: I18nContext.current().lang }), error: 'Unauthorized' })
         }

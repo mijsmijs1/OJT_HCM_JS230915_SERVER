@@ -21,7 +21,7 @@ export class Candidate {
     @Column({ type: 'varchar' })
     name: string;
 
-    @Column({ default: 0 })
+    @Column({ default: 1 })
     isOpen: number;
 
     @Column({ type: 'timestamp', nullable: true })
