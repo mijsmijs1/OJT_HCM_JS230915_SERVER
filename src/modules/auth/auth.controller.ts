@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Patch, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Patch, Post, Req, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
@@ -56,7 +56,7 @@ export class AuthController {
       await this.authService.create({
         name: body.name,
         email: body.email,
-        password: await SecureUtils.hashPassword(body.password) as string
+        password: body.password
       })
       // let message = await i18n.t('success-message.auth.registerOk')
       return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.auth.registerOk', { lang: I18nContext.current().lang }) })
@@ -108,14 +108,14 @@ export class AuthController {
   @Post('/change-password')
   async changePassword(@Req() req: RequestToken, @Body() body: ChangePasswordDTO, @Res() res: Response) {
     try {
-      console.log(req.tokenData)
-      if (SecureUtils.comparePasswords(body.oldPassword, req.tokenData.password)) {
+      if (!await SecureUtils.comparePasswords(body.oldPassword, req.tokenData.password)) {
         throw new HttpException(this.i18n.t('err-message.errors.oldPasswordInvalid', { lang: I18nContext.current().lang }), HttpStatus.BAD_REQUEST, { cause: 'Bad Request' })
       }
-      let result = await this.authService.update(req.tokenData.id, { password: body.newPassword }, 'all')
-      if (result) {
-        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.auth.changePasswordOK', { lang: I18nContext.current().lang }) })
-      }
+      let result = await this.authService.update(req.tokenData.id, { password: await SecureUtils.hashPassword(body.newPassword) }, 'candidate')
+      const token_key = `bl_${req.header('Authorizarion')?.replace('Bearer ', '')}`;
+      await this.redisService.redisClient.set(token_key, req.header('Authorizarion')?.replace('Bearer ', ''));
+      this.redisService.redisClient.expireAt(token_key, Number(req.tokenData.exp));
+      return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.auth.changePasswordOK', { lang: I18nContext.current().lang }) })
     } catch (err) {
       console.log(err)
       if (err instanceof HttpException) {
@@ -124,13 +124,16 @@ export class AuthController {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t('err-message.errors.serverError', { lang: I18nContext.current().lang }), error: 'InternalServerError' })
     }
   }
-  @Patch('update-candidate-account')
+  @Patch('/update-candidate-account')
   async updateAccount(@Req() req: RequestToken, @Body() body: UpdateCandidateDTO, @Res() res: Response) {
     try {
       let result = await this.authService.update(req.tokenData.id, body, "candidate")
       if (result) {
         let newCandidate = await this.authService.findById(req.tokenData.id, 'candidate')
         if (newCandidate) {
+          const token_key = `bl_${req.header('Authorizarion')?.replace('Bearer ', '')}`;
+          await this.redisService.redisClient.set(token_key, req.header('Authorizarion')?.replace('Bearer ', ''));
+          this.redisService.redisClient.expireAt(token_key, Number(req.tokenData.exp));
           return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.auth.updateAccountOK', { lang: I18nContext.current().lang }), data: { ...body, updated_at: newCandidate.updated_at }, accessToken: token.createToken(newCandidate), refreshToken: token.createRefreshToken(newCandidate) })
         }
       }
@@ -144,13 +147,15 @@ export class AuthController {
   @Get('/logout')
   async logout(@Req() req: RequestToken, @Body() body: { refreshToken: string }, @Res() res: Response) {
     try {
-      const token_key = `bl_${req.header('Authorizarion')?.replace('Bearer ', '')} `;
+      const token_key = `bl_${req.header('Authorizarion')?.replace('Bearer ', '')}`;
       await this.redisService.redisClient.set(token_key, req.header('Authorizarion')?.replace('Bearer ', ''));
-      this.redisService.redisClient.expireAt(token_key, req.tokenData.exp);
-      const refresh_token = `bl_refresh_${body.refreshToken} `
+      this.redisService.redisClient.expireAt(token_key, Number(req.tokenData.exp));
+
+      const refresh_token = `bl_refresh_${body.refreshToken}`
       await this.redisService.redisClient.set(refresh_token, body.refreshToken);
       let refreshTokenData = token.decodeRefreshToken(body.refreshToken);
-      this.redisService.redisClient.expireAt(refresh_token, (refreshTokenData as any).exp);
+
+      this.redisService.redisClient.expireAt(refresh_token, Number((refreshTokenData as any).exp));
       return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.auth.LogoutOk', { lang: I18nContext.current().lang }) })
     } catch (err) {
       if (err instanceof HttpException) {
@@ -162,7 +167,7 @@ export class AuthController {
   @Get('/refresh-token')
   async refreshToken(@Body() body: { refreshToken: string }, @Res() res: Response) {
     try {
-      const inDenyList = await this.redisService.redisClient.get(`bl_refresh_${body.refreshToken} `);
+      const inDenyList = await this.redisService.redisClient.get(`bl_refresh_${body.refreshToken}`);
       if (inDenyList) {
         return res.status(HttpStatus.UNAUTHORIZED).json({ message: this.i18n.t('err-message.errors.TokenInvalid', { lang: I18nContext.current().lang }), error: 'Unauthorized' })
       }
@@ -191,6 +196,36 @@ export class AuthController {
       if (result) {
         return res.status(HttpStatus.OK).send(`Your new password is: "${req.query.newPassword}"`)
       }
+    } catch (err) {
+      console.log(err)
+      if (err instanceof HttpException) {
+        return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
+      }
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
+    }
+  }
+  @Get('/check-token')
+  async checkToken(@Req() req: RequestToken, @Res() res: Response) {
+    try {
+      return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.auth.decodeTokenOK', { lang: I18nContext.current().lang }), data: { ...req.tokenData } })
+    } catch (err) {
+      console.log(err)
+      if (err instanceof HttpException) {
+        return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
+      }
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
+    }
+  }
+  @Delete('delete-account')
+  async deleteAccount(@Req() req: RequestToken, @Body() body: { email: string, role: string }, @Res() res: Response) {
+    try {
+      console.log(req.tokenData)
+      if (req.tokenData.email != body.email) {
+        throw new HttpException(this.i18n.t('err-message.errors.NotFound', { lang: I18nContext.current().lang }), HttpStatus.UNAUTHORIZED, { cause: 'Not Found' })
+      }
+      // let result = await this.authService.delete(req.tokenData.id, body.role)
+      await this.authService.update(req.tokenData.id, { isOpen: 0 }, 'candidate');
+      return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.auth.deleteAccountOK', { lang: I18nContext.current().lang }) })
     } catch (err) {
       console.log(err)
       if (err instanceof HttpException) {

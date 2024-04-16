@@ -45,19 +45,24 @@ export class AuthenticateJWTMiddleware {
         return res.status(HttpStatus.UNAUTHORIZED).json({ message: this.i18n.t('err-message.errors.TokenInvalid', { lang: I18nContext.current().lang }), error: 'Unauthorized' })
       }
       const inDenyList = await this.redisService.redisClient.get(`bl_${tokenCode}`);
+      console.log('inDenyList', inDenyList, typeof inDenyList)
       if (inDenyList) {
+        console.log('inDenyList', inDenyList, typeof inDenyList)
         return res.status(HttpStatus.UNAUTHORIZED).json({ message: this.i18n.t('err-message.errors.TokenInvalid', { lang: I18nContext.current().lang }), error: 'Unauthorized' })
       }
       let decodedData = token.decodeToken(tokenCode)
-      if (!decodedData) {
+      if (decodedData == 'expired') {
+        return res.status(HttpStatus.GATEWAY_TIMEOUT).json({ message: this.i18n.t('err-message.errors.TokenExpired', { lang: I18nContext.current().lang }), error: 'Token Expired' })
+      }
+      if (!decodedData || decodedData == 'null' || decodedData == 'undefined') {
         return res.status(HttpStatus.UNAUTHORIZED).json({ message: this.i18n.t('err-message.errors.TokenInvalid', { lang: I18nContext.current().lang }), error: 'Unauthorized' })
       }
       const dataFromRedis = await this.redisService.redisClient.get(tokenCode);
-      if (dataFromRedis) {
+      if (dataFromRedis != '{}' && dataFromRedis && decodedData !== 'null') {
         req.tokenData = JSON.parse(dataFromRedis);
         next();
       } else {
-        let result = this.authService.findByEmail((decodedData as any).email, "all");
+        let result = await this.authService.findByEmail((decodedData as any).email, "all");
         if (!result) {
           return res.status(HttpStatus.UNAUTHORIZED).json({ message: this.i18n.t('err-message.errors.TokenInvalid', { lang: I18nContext.current().lang }), error: 'Unauthorized' })
         }
@@ -67,11 +72,13 @@ export class AuthenticateJWTMiddleware {
         if ((decodedData as any).updateAt != (result as any).updateAt) {
           return res.status(HttpStatus.UNAUTHORIZED).json({ message: this.i18n.t('err-message.errors.TokenInvalid', { lang: I18nContext.current().lang }), error: 'Unauthorized' })
         }
-        this.redisService.redisClient.set(tokenCode, (decodedData as any).exp, JSON.stringify(result))
+        await this.redisService.redisClient.set(tokenCode, JSON.stringify(decodedData));
+        await this.redisService.redisClient.expireAt(tokenCode, (decodedData as any).exp);
         req.tokenData = decodedData;
         next();
       }
     } catch (err) {
+      console.log('err', err)
       return res.status(HttpStatus.UNAUTHORIZED).json({ message: this.i18n.t('err-message.errors.TokenInvalid', { lang: I18nContext.current().lang }), error: 'Unauthorized' })
     }
   }

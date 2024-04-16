@@ -57,19 +57,19 @@ export class Candidate {
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     updated_at: Date;
 
-    @OneToMany(() => EducationCandidate, (education: any) => education.candidate)
+    @OneToMany(() => EducationCandidate, (education: any) => education.candidate, { cascade: true })
     education: EducationCandidate[];
 
-    @OneToMany(() => ExperienceCandidate, (experience: any) => experience.candidate)
+    @OneToMany(() => ExperienceCandidate, (experience: any) => experience.candidate, { cascade: true })
     experience: ExperienceCandidate[];
 
-    @OneToMany(() => ProjectCandidate, (project: any) => project.candidate)
+    @OneToMany(() => ProjectCandidate, (project: any) => project.candidate, { cascade: true })
     projects: ProjectCandidate[];
 
-    @OneToMany(() => CertificateCandidate, (certificate: any) => certificate.candidate)
+    @OneToMany(() => CertificateCandidate, (certificate: any) => certificate.candidate, { cascade: true })
     certificates: CertificateCandidate[];
 
-    @OneToMany(() => SkillsCandidate, (skill: any) => skill.candidate)
+    @OneToMany(() => SkillsCandidate, (skill: any) => skill.candidate, { cascade: true })
     skills: SkillsCandidate[];
 
     @ManyToMany(() => Job, job => job.candidates)

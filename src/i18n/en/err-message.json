@@ -9,9 +9,10 @@
         "lookedAccount": "Your account has been locked",
         "serverError": "Server Error!",
         "TokenInvalid": "Token Invalid!",
+        "TokenExpired": "Token expired",
         "NotFound": "Not Found Data!",
-        "oldPasswordInvalid": "Your Old Password is wrong!"
-        
+        "oldPasswordInvalid": "Your Old Password is wrong!",
+        "PermissionInvalid": "Permission Invalid!"
     },
     "validation": {
         "IsNotEmpty": "This field cannot be empty.",
