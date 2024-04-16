@@ -3,6 +3,8 @@
         "registerOk": "Register successfull.",
         "loginOk": "Login successfull",
         "LogoutOk": "Logout successfull",
-        "refreshTokenOk": "Refresf new token successfull"
+        "refreshTokenOk": "Refresf new token successfull",
+        "sendEmailSuccess": "Send Email Successfull",
+        "changePasswordOK": "Change password Successfull"
     }
 }
