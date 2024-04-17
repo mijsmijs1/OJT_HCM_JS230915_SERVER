@@ -70,20 +70,19 @@ export class CompanyController {
     }
   }
 
-  // @Get('/search')
-  // async getBySearch(@Req() req: RequestToken, @Res() res: Response) {
-  //   try {
-  //     console.log(req.query.keyword, typeof req.query.keyword)
-  //     let result = await this.companyService.getSearch(Number(req.query.page), Number(req.query.pageSize) ? Number(req.query.pageSize) : 20, req.query.keyword ? String(req.query.keyword) : "all", req.query.address ? String(req.query.address) : "all")
-  //     return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.company.getCompanyOK', { lang: I18nContext.current().lang }), data: result })
-  //   } catch (err) {
-  //     console.log(err)
-  //     if (err instanceof HttpException) {
-  //       return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
-  //     }
-  //     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
-  //   }
-  // }
+  @Get('/search')
+  async getBySearch(@Req() req: RequestToken, @Res() res: Response) {
+    try {
+      let result = await this.companyService.getSearch(Number(req.query.page), Number(req.query.pageSize) ? Number(req.query.pageSize) : 20, req.query.keyword ? String(req.query.keyword) : "all", req.query.address ? String(req.query.address) : "all")
+      return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.company.getCompanyOK', { lang: I18nContext.current().lang }), data: result })
+    } catch (err) {
+      console.log(err)
+      if (err instanceof HttpException) {
+        return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
+      }
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
+    }
+  }
 
   @Get('/:companyId')
   async getOneCompany(@Req() req: RequestToken, @Res() res: Response) {
