@@ -45,7 +45,6 @@ export class AuthenticateJWTMiddleware {
         return res.status(HttpStatus.UNAUTHORIZED).json({ message: this.i18n.t('err-message.errors.TokenInvalid', { lang: I18nContext.current().lang }), error: 'Unauthorized' })
       }
       const inDenyList = await this.redisService.redisClient.get(`bl_${tokenCode}`);
-      console.log('inDenyList', inDenyList, typeof inDenyList)
       if (inDenyList) {
         console.log('inDenyList', inDenyList, typeof inDenyList)
         return res.status(HttpStatus.UNAUTHORIZED).json({ message: this.i18n.t('err-message.errors.TokenInvalid', { lang: I18nContext.current().lang }), error: 'Unauthorized' })

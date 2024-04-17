@@ -17,7 +17,7 @@ export class Address_Company {
     @Column({ type: 'varchar', length: 255 })
     address: string;
 
-    @Column({ type: "varchar", length: 255 })
+    @Column({ type: "varchar", length: 255, default: "updating" })
     map_url: string;
 
     @Column()

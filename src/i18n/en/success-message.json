@@ -8,7 +8,12 @@
         "changePasswordOK": "Change password Successfull",
         "updateAccountOK": "Update Account Successfull",
         "deleteAccountOK": "Delete Account Successfull",
-        "decodeTokenOK": "Decoded Token Successfull",
+        "decodeTokenOK": "Decoded Token Successfull"
+    },
+    "company": {
+        "createCompany": "Create Skill Successfull"
+    },
+    "candidate": {
         "createCertificate": "Create Certificate Successfull",
         "createEducation": "Create Education Successfull",
         "createExperience": "Create Experience Successfull",

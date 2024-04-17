@@ -32,7 +32,7 @@ export class CandidateController {
     try {
       let result = await this.candidateService.createCertificate({ ...body, candidate_id: Number(req.tokenData.id) })
       if (result) {
-        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.auth.createCertificate', { lang: I18nContext.current().lang }), data: { ...result } })
+        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.candidate.createCertificate', { lang: I18nContext.current().lang }), data: { ...result } })
       }
     }
     catch (err) {
@@ -48,7 +48,7 @@ export class CandidateController {
     try {
       let result = await this.candidateService.createEducation({ ...body, candidate_id: Number(req.tokenData.id) })
       if (result) {
-        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.auth.createEducation', { lang: I18nContext.current().lang }), data: { ...result } })
+        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.candidate.createEducation', { lang: I18nContext.current().lang }), data: { ...result } })
       }
     }
     catch (err) {
@@ -64,7 +64,7 @@ export class CandidateController {
     try {
       let result = await this.candidateService.createExperience({ ...body, candidate_id: Number(req.tokenData.id) })
       if (result) {
-        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.auth.createExperience', { lang: I18nContext.current().lang }), data: { ...result } })
+        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.candidate.createExperience', { lang: I18nContext.current().lang }), data: { ...result } })
       }
     }
     catch (err) {
@@ -80,7 +80,7 @@ export class CandidateController {
     try {
       let result = await this.candidateService.createProject({ ...body, candidate_id: Number(req.tokenData.id) })
       if (result) {
-        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.auth.createProject', { lang: I18nContext.current().lang }), data: { ...result } })
+        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.candidate.createProject', { lang: I18nContext.current().lang }), data: { ...result } })
       }
     }
     catch (err) {
@@ -96,7 +96,7 @@ export class CandidateController {
     try {
       let result = await this.candidateService.createSkill({ ...body, candidate_id: Number(req.tokenData.id) })
       if (result) {
-        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.auth.createSkill', { lang: I18nContext.current().lang }), data: { ...result } })
+        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.candidate.createSkill', { lang: I18nContext.current().lang }), data: { ...result } })
       }
     }
     catch (err) {
@@ -112,7 +112,7 @@ export class CandidateController {
     try {
       let result = await this.candidateService.updateCertificate(Number(req.params.id), { ...body })
       if (result) {
-        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.auth.updateCertificate', { lang: I18nContext.current().lang }), data: { ...result } })
+        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.candidate.updateCertificate', { lang: I18nContext.current().lang }), data: { ...result } })
       }
     }
     catch (err) {
@@ -128,7 +128,7 @@ export class CandidateController {
     try {
       let result = await this.candidateService.updateEducation(Number(req.params.id), { ...body })
       if (result) {
-        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.auth.updateEducation', { lang: I18nContext.current().lang }), data: { ...result } })
+        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.candidate.updateEducation', { lang: I18nContext.current().lang }), data: { ...result } })
       }
     }
     catch (err) {
@@ -144,7 +144,7 @@ export class CandidateController {
     try {
       let result = await this.candidateService.updateExperience(Number(req.params.id), { ...body })
       if (result) {
-        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.auth.updateExperience', { lang: I18nContext.current().lang }), data: { ...result } })
+        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.candidate.updateExperience', { lang: I18nContext.current().lang }), data: { ...result } })
       }
     }
     catch (err) {
@@ -160,7 +160,7 @@ export class CandidateController {
     try {
       let result = await this.candidateService.updateProject(Number(req.params.id), { ...body })
       if (result) {
-        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.auth.updateProject', { lang: I18nContext.current().lang }), data: { ...result } })
+        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.candidate.updateProject', { lang: I18nContext.current().lang }), data: { ...result } })
       }
     }
     catch (err) {
@@ -176,7 +176,7 @@ export class CandidateController {
     try {
       let result = await this.candidateService.updateSkill(Number(req.params.id), { ...body })
       if (result) {
-        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.auth.updateSkill', { lang: I18nContext.current().lang }), data: { ...result } })
+        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.candidate.updateSkill', { lang: I18nContext.current().lang }), data: { ...result } })
       }
     }
     catch (err) {
