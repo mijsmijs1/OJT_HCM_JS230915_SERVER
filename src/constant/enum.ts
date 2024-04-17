@@ -9,6 +9,12 @@ export enum CandidateGender {
   OTHER
 }
 
+export enum Status {
+  active,
+  block,
+  inactive
+}
+
 // rating.enum.ts
 export enum Rating {
   ONE_STAR = 1,

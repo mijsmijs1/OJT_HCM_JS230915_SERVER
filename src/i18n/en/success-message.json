@@ -12,7 +12,8 @@
     },
     "company": {
         "createCompany": "Create Skill Successfull",
-        "getCompanyOK": " Get Company Successfull"
+        "getCompanyOK": " Get Company Successfull",
+        "updateCompanyOK": " Update Company Successfull"
     },
     "candidate": {
         "createCertificate": "Create Certificate Successfull",

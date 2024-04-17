@@ -110,9 +110,12 @@ export class CandidateController {
   @Patch('/update-certificate/:id')
   async updateCertificate(@Req() req: RequestToken, @Body() body: UpdateCertificateCandidateDTO, @Res() res: Response) {
     try {
-      let result = await this.candidateService.updateCertificate(Number(req.params.id), { ...body })
-      if (result) {
-        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.candidate.updateCertificate', { lang: I18nContext.current().lang }), data: { ...result } })
+      let checkResult = await this.candidateService.findCertificateByIdFromAccountId(req.tokenData.id, Number(req.params.id))
+      if (checkResult) {
+        let result = await this.candidateService.updateCertificate(Number(req.params.id), { ...body })
+        if (result) {
+          return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.candidate.updateCertificate', { lang: I18nContext.current().lang }), data: { ...result } })
+        }
       }
     }
     catch (err) {
@@ -126,9 +129,12 @@ export class CandidateController {
   @Patch('/update-education/:id')
   async updateEducation(@Req() req: RequestToken, @Body() body: UpdateEducationCandidateDTO, @Res() res: Response) {
     try {
-      let result = await this.candidateService.updateEducation(Number(req.params.id), { ...body })
-      if (result) {
-        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.candidate.updateEducation', { lang: I18nContext.current().lang }), data: { ...result } })
+      let checkResult = await this.candidateService.findEducationByIdFromAccountId(req.tokenData.id, Number(req.params.id))
+      if (checkResult) {
+        let result = await this.candidateService.updateEducation(Number(req.params.id), { ...body })
+        if (result) {
+          return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.candidate.updateEducation', { lang: I18nContext.current().lang }), data: { ...result } })
+        }
       }
     }
     catch (err) {
@@ -142,9 +148,12 @@ export class CandidateController {
   @Patch('/update-experience/:id')
   async updateExperience(@Req() req: RequestToken, @Body() body: UpdateExperienceCandidateDTO, @Res() res: Response) {
     try {
-      let result = await this.candidateService.updateExperience(Number(req.params.id), { ...body })
-      if (result) {
-        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.candidate.updateExperience', { lang: I18nContext.current().lang }), data: { ...result } })
+      let checkResult = await this.candidateService.findExperienceByIdFromAccountId(req.tokenData.id, Number(req.params.id))
+      if (checkResult) {
+        let result = await this.candidateService.updateExperience(Number(req.params.id), { ...body })
+        if (result) {
+          return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.candidate.updateExperience', { lang: I18nContext.current().lang }), data: { ...result } })
+        }
       }
     }
     catch (err) {
@@ -158,9 +167,12 @@ export class CandidateController {
   @Patch('/update-project/:id')
   async updateProject(@Req() req: RequestToken, @Body() body: UpdateProjectCandidateDTO, @Res() res: Response) {
     try {
-      let result = await this.candidateService.updateProject(Number(req.params.id), { ...body })
-      if (result) {
-        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.candidate.updateProject', { lang: I18nContext.current().lang }), data: { ...result } })
+      let checkResult = await this.candidateService.findProjectByIdFromAccountId(req.tokenData.id, Number(req.params.id))
+      if (checkResult) {
+        let result = await this.candidateService.updateProject(Number(req.params.id), { ...body })
+        if (result) {
+          return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.candidate.updateProject', { lang: I18nContext.current().lang }), data: { ...result } })
+        }
       }
     }
     catch (err) {
@@ -174,9 +186,12 @@ export class CandidateController {
   @Patch('/update-skill/:id')
   async updateSkill(@Req() req: RequestToken, @Body() body: UpdateSkillsCandidateDTO, @Res() res: Response) {
     try {
-      let result = await this.candidateService.updateSkill(Number(req.params.id), { ...body })
-      if (result) {
-        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.candidate.updateSkill', { lang: I18nContext.current().lang }), data: { ...result } })
+      let checkResult = await this.candidateService.findSkillByIdFromAccountId(req.tokenData.id, Number(req.params.id))
+      if (checkResult) {
+        let result = await this.candidateService.updateSkill(Number(req.params.id), { ...body })
+        if (result) {
+          return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.candidate.updateSkill', { lang: I18nContext.current().lang }), data: { ...result } })
+        }
       }
     }
     catch (err) {
