@@ -141,43 +141,26 @@ export class CompanyService {
     }
 
     async getSearch(page: number, pageSize: number, keyword: string, address: string) {
-        console.log(page, pageSize, keyword, address)
         try {
             let skip = 0;
-            if (page == 1) {
-                skip = 1;
-            } else {
+            if (page > 1) {
                 skip = (page - 1) * pageSize;
             }
-            let query = `
-                SELECT *
-                FROM Company
-                WHERE 1=1
-            `;
-            if (keyword == 'all' || keyword == '') {
-                keyword = '';
-            } else {
-                query += ` AND (LOWER(Company.name) LIKE LOWER('%${keyword}%'))`;
-            }
-            if (address == 'all' || address == '') {
-                address = '';
-            } else {
-                query += ` AND Company.id IN (
-                    SELECT company_id
-                    FROM Address_Company
-                    WHERE LOWER(Address_Company.address) LIKE LOWER('%${address}%')
-                )`;
 
-            }
-            console.log(` LIMIT ${pageSize} OFFSET ${skip}`)
-            query += ` LIMIT ${pageSize} OFFSET ${skip}`;
-            console.log(query)
-            const company = await this.companyRepository.query(query);
-            console.log(company)
-            if (!company || company.length == 0) {
+            const companies = await this.companyRepository
+                .createQueryBuilder("company")
+                .leftJoinAndSelect("company.address_companies", "address_company")
+                .where("LOWER(company.name) LIKE LOWER(:keyword)", { keyword: `%${keyword}%` })
+                .andWhere("LOWER(address_company.address) LIKE LOWER(:address)", { address: `%${address}%` })
+                .skip(skip)
+                .take(pageSize)
+                .getMany();
+
+            if (!companies || companies.length === 0) {
                 throw new HttpException(this.i18n.t('err-message.errors.NotFound', { lang: I18nContext.current().lang }), HttpStatus.NOT_FOUND, { cause: "Not Found" });
             }
-            return company;
+
+            return companies;
         } catch (error) {
             console.log(error);
             if (error instanceof HttpException) {
@@ -187,6 +170,7 @@ export class CompanyService {
             }
         }
     }
+
 
 
 
