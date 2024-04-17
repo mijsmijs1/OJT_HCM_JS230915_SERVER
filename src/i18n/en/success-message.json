@@ -11,7 +11,8 @@
         "decodeTokenOK": "Decoded Token Successfull"
     },
     "company": {
-        "createCompany": "Create Skill Successfull"
+        "createCompany": "Create Skill Successfull",
+        "getCompanyOK": " Get Company Successfull"
     },
     "candidate": {
         "createCertificate": "Create Certificate Successfull",

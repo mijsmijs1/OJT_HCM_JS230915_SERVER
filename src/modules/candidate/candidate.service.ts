@@ -166,5 +166,70 @@ export class CandidateService {
             }
         }
     }
+    async getSkill() {
+        try {
+            let data = await this.skillCandidateRepository.find()
+            return data;
+        } catch (error) {
+            if (error instanceof HttpException) {
+                throw error; // Re-throw the existing HttpException
+            } else {
+                throw new HttpException(this.i18n.t('err-message.errors.databaseConnectFailed', { lang: I18nContext.current().lang }), HttpStatus.BAD_GATEWAY, { cause: "Bad Gateway" });
+            }
+        }
+    }
 
+    async getCertificate() {
+        try {
+            console.log('da vao')
+            let data = await this.certificateCandidateRepository.find()
+            return data;
+        } catch (error) {
+            console.log(error)
+            if (error instanceof HttpException) {
+                throw error; // Re-throw the existing HttpException
+            } else {
+                throw new HttpException(this.i18n.t('err-message.errors.databaseConnectFailed', { lang: I18nContext.current().lang }), HttpStatus.BAD_GATEWAY, { cause: "Bad Gateway" });
+            }
+        }
+    }
+
+    async getEducation() {
+        try {
+            let data = await this.educationCandidateRepository.find()
+            return data;
+        } catch (error) {
+            if (error instanceof HttpException) {
+                throw error; // Re-throw the existing HttpException
+            } else {
+                throw new HttpException(this.i18n.t('err-message.errors.databaseConnectFailed', { lang: I18nContext.current().lang }), HttpStatus.BAD_GATEWAY, { cause: "Bad Gateway" });
+            }
+        }
+    }
+
+    async getExperience() {
+        try {
+            let data = await this.experienceCandidateRepository.find()
+            return data;
+        } catch (error) {
+            if (error instanceof HttpException) {
+                throw error; // Re-throw the existing HttpException
+            } else {
+                throw new HttpException(this.i18n.t('err-message.errors.databaseConnectFailed', { lang: I18nContext.current().lang }), HttpStatus.BAD_GATEWAY, { cause: "Bad Gateway" });
+            }
+        }
+    }
+
+    async getProject() {
+        try {
+            let data = await this.projectCandidateRepository.find()
+            return data;
+        } catch (error) {
+            if (error instanceof HttpException) {
+                throw error; // Re-throw the existing HttpException
+            } else {
+                throw new HttpException(this.i18n.t('err-message.errors.databaseConnectFailed', { lang: I18nContext.current().lang }), HttpStatus.BAD_GATEWAY, { cause: "Bad Gateway" });
+            }
+        }
+    }
 }

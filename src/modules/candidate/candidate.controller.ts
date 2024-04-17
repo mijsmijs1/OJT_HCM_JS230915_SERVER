@@ -1,4 +1,4 @@
-import { Body, Controller, HttpException, HttpStatus, Patch, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Patch, Post, Req, Res } from '@nestjs/common';
 import { CandidateService } from './candidate.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { I18nContext, I18nService } from 'nestjs-i18n';
@@ -186,5 +186,83 @@ export class CandidateController {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
     }
   }
+  @Get('/skill')
+  async getSkill(@Res() res: Response) {
+    try {
+      let result = await this.candidateService.getSkill()
+      if (result) {
+        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.candidate.updateSkill', { lang: I18nContext.current().lang }), data: { ...result } })
+      }
+    }
+    catch (err) {
+      if (err instanceof HttpException) {
+        return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
+      }
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
+    }
+  }
 
+  @Get('/certificate')
+  async getCertificate(@Res() res: Response) {
+    try {
+      let result = await this.candidateService.getCertificate()
+      if (result) {
+        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.candidate.updateSkill', { lang: I18nContext.current().lang }), data: { ...result } })
+      }
+    }
+    catch (err) {
+      if (err instanceof HttpException) {
+        return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
+      }
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
+    }
+  }
+
+  @Get('/experience')
+  async getExperience(@Res() res: Response) {
+    try {
+      let result = await this.candidateService.getExperience()
+      if (result) {
+        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.candidate.updateSkill', { lang: I18nContext.current().lang }), data: { ...result } })
+      }
+    }
+    catch (err) {
+      if (err instanceof HttpException) {
+        return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
+      }
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
+    }
+  }
+
+  @Get('/project')
+  async getProject(@Res() res: Response) {
+    try {
+      let result = await this.candidateService.getProject()
+      if (result) {
+        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.candidate.updateSkill', { lang: I18nContext.current().lang }), data: { ...result } })
+      }
+    }
+    catch (err) {
+      if (err instanceof HttpException) {
+        return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
+      }
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
+    }
+  }
+
+  @Get('/education')
+  async getEducation(@Res() res: Response) {
+    try {
+      let result = await this.candidateService.getEducation()
+      if (result) {
+        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.candidate.updateSkill', { lang: I18nContext.current().lang }), data: { ...result } })
+      }
+    }
+    catch (err) {
+      if (err instanceof HttpException) {
+        return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
+      }
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
+    }
+  }
 }

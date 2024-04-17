@@ -24,6 +24,7 @@ export class CompanyModule implements NestModule {
       .forRoutes(
         { path: "company/create-company", method: RequestMethod.POST, version: '1' },
         { path: "company/create-address/:companyId", method: RequestMethod.POST, version: '1' },
+        // { path: "/search", method: RequestMethod.GET, version: '1' },
         { path: "/:companyId", method: RequestMethod.GET, version: '1' }
       )
   }
