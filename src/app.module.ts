@@ -11,10 +11,20 @@ import { AcceptLanguageResolver, HeaderResolver, I18nModule, QueryResolver } fro
 import { join } from 'path';
 import { RedisService } from './shared/utils/redis/redis';
 import { MailService } from './shared/utils/mail/mail.service';
+import { AuthService } from './modules/auth/auth.service';
+import { Candidate } from './modules/candidate/database/candidate.entity';
+import { CertificateCandidate } from './modules/candidate/database/certificate_candidate.entity';
+import { EducationCandidate } from './modules/candidate/database/education_candidate.entity';
+import { ExperienceCandidate } from './modules/candidate/database/experience_candidate.entity';
+import { ProjectCandidate } from './modules/candidate/database/project_candidate.entity';
+import { SkillsCandidate } from './modules/candidate/database/skill_candidate.entity';
+import { Account_Company } from './modules/company/database/account_company.entity';
+import { Company } from './modules/company/database/company.entity';
 
 
 @Module({
   imports: [
+    TypeOrmModule.forFeature([Candidate, CertificateCandidate, EducationCandidate, ExperienceCandidate, ProjectCandidate, SkillsCandidate, Account_Company, Company]),
     TypeOrmModule.forRoot(config),
     MulterModule.register({
       dest: './uploads', // Đường dẫn tới thư mục lưu trữ file tải lên
@@ -38,6 +48,6 @@ import { MailService } from './shared/utils/mail/mail.service';
     AuthModule,
   ],
   controllers: [],
-  providers: [RedisService, MailService],
+  providers: [RedisService, MailService, AuthService],
 })
 export class AppModule { }
