@@ -144,6 +144,26 @@ export class AuthController {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
     }
   }
+  @Patch('/update-candidate-project')
+  async updateProject(@Req() req: RequestToken, @Body() body: UpdateCandidateDTO, @Res() res: Response) {
+    try {
+      let result = await this.authService.update(req.tokenData.id, body, "candidate")
+      if (result) {
+        let newCandidate = await this.authService.findById(req.tokenData.id, 'candidate')
+        if (newCandidate) {
+          const token_key = `bl_${req.header('Authorizarion')?.replace('Bearer ', '')}`;
+          await this.redisService.redisClient.set(token_key, req.header('Authorizarion')?.replace('Bearer ', ''));
+          this.redisService.redisClient.expireAt(token_key, Number(req.tokenData.exp));
+          return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.auth.updateAccountOK', { lang: I18nContext.current().lang }), data: { ...body, updated_at: newCandidate.updated_at }, accessToken: token.createToken(newCandidate), refreshToken: token.createRefreshToken(newCandidate) })
+        }
+      }
+    } catch (err) {
+      if (err instanceof HttpException) {
+        return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
+      }
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
+    }
+  }
   @Get('/logout')
   async logout(@Req() req: RequestToken, @Body() body: { refreshToken: string }, @Res() res: Response) {
     try {

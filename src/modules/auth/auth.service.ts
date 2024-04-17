@@ -1,22 +1,19 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Global, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Candidate } from '../candidate/database/candidate.entity';
 import { Repository } from 'typeorm';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { RegisterAuthDTO } from './dtos/register-auth.dto';
 import { Role } from 'src/constant/enum';
-import { Company } from '../company/database/company.entity';
 import { Account_Company } from '../company/database/account_company.entity';
 import { SecureUtils } from 'src/shared/utils/secure.util';
 
-
+@Global()
 @Injectable()
 export class AuthService {
     constructor(
         @InjectRepository(Candidate)
         private readonly candidateRespository: Repository<Candidate>,
-        @InjectRepository(Company)
-        private readonly companyRespository: Repository<Company>,
         @InjectRepository(Account_Company)
         private readonly accountCompanyRespository: Repository<Account_Company>,
         private readonly i18n: I18nService

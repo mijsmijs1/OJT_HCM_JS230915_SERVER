@@ -8,6 +8,16 @@
         "changePasswordOK": "Change password Successfull",
         "updateAccountOK": "Update Account Successfull",
         "deleteAccountOK": "Delete Account Successfull",
-        "decodeTokenOK": "Decoded Token Successfull"
+        "decodeTokenOK": "Decoded Token Successfull",
+        "createCertificate": "Create Certificate Successfull",
+        "createEducation": "Create Education Successfull",
+        "createExperience": "Create Experience Successfull",
+        "createProject": "Create Project Successfull",
+        "createSkill": "Create Skill Successfull",
+        "updateCertificate": "Update Certificate Successfull",
+        "updateEducation": "Update Education Successfull",
+        "updateExperience": "Update Experience Successfull",
+        "updateProject": "Update Project Successfull",
+        "updateSkill": "Update Skill Successfull"
     }
 }
