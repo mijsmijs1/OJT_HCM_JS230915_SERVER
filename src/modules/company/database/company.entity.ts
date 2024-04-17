@@ -15,10 +15,10 @@ export class Company {
     @JoinColumn({ name: 'account_company_id' })
     account: Account_Company;
 
-    @Column({ type: 'varchar', length: 255 })
+    @Column({ type: 'varchar', length: 255, unique: true })
     name: string;
 
-    @Column({ type: 'varchar', length: 255 })
+    @Column({ type: 'varchar', length: 255, default: 'https://i.pinimg.com/originals/ec/d9/c2/ecd9c2e8ed0dbbc96ac472a965e4afda.jpg' })
     logo: string;
 
     @Column({ type: 'varchar', length: 255 })
@@ -28,13 +28,19 @@ export class Company {
     link_fb: string;
 
     @Column({ type: 'varchar', length: 255 })
-    link_likedin: string;
+    link_linkedin: string;
 
     @Column({ default: 0 })
     follower: number;
 
     @Column({ default: 1 })
     size: number;
+
+    @Column({ type: 'varchar', unique: true })
+    email: string;
+
+    @Column({ nullable: true })
+    phone: string;
 
     @Column({ type: 'text' })
     description: string;
@@ -48,7 +54,7 @@ export class Company {
     @OneToMany(() => Address_Company, address_company => address_company.company)
     address_companies: Address_Company[];
 
-    @Column()
+    @Column({ nullable: true })
     type_company_id: number;
 
     @ManyToOne(() => Type_Company, type_company => type_company.companies)

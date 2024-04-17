@@ -6,7 +6,7 @@ export class Type_Company {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ type: 'varchar', length: 255 })
+    @Column({ type: 'varchar', length: 255, default: 'IT' })
     name: string;
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })

@@ -12,7 +12,8 @@
         "TokenExpired": "Token expired",
         "NotFound": "Not Found Data!",
         "oldPasswordInvalid": "Your Old Password is wrong!",
-        "PermissionInvalid": "Permission Invalid!"
+        "PermissionInvalid": "Permission Invalid!",
+        "duplicateCompanyName": "The company has existed with the name."
     },
     "validation": {
         "IsNotEmpty": "This field cannot be empty.",
