@@ -3,6 +3,7 @@ import { Account_Company } from "./account_company.entity";
 import { Type_Company } from "./type_company.entity";
 import { Job } from "src/modules/job/database/job.entity";
 import { Address_Company } from "./address_company.entity";
+import { Status } from "src/constant/enum";
 
 @Entity()
 export class Company {
@@ -35,6 +36,9 @@ export class Company {
 
     @Column({ default: 1 })
     size: number;
+
+    @Column({ default: Status.active })
+    status: Status;
 
     @Column({ type: 'varchar', unique: true })
     email: string;

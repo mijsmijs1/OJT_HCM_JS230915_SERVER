@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Patch, Post, Req, Res } from '@nestjs/common';
 import { CompanyService } from './company.service';
 import { RegisterCompanyDTO } from './dtos/register-company.dto';
 import { Response } from 'express';
@@ -6,6 +6,9 @@ import { I18nContext, I18nService } from 'nestjs-i18n';
 import { CreateCompanyDTO } from './dtos/create-company.dto';
 import { RequestToken } from 'src/shared/middleware/authen-jwr.middleware';
 import { CreateAddressDTO } from './dtos/create-address.dto';
+import { UpdateCompanyDTO } from './dtos/update-company.dto';
+import { UpdateAddressDTO } from './dtos/update-address.dto';
+import { Status } from 'src/constant/enum';
 
 @Controller('company')
 export class CompanyController {
@@ -70,6 +73,51 @@ export class CompanyController {
     }
   }
 
+  @Patch('/update-company/:companyId')
+  async updateCompany(@Req() req: RequestToken, @Body() body: UpdateCompanyDTO, @Res() res: Response) {
+    try {
+      let checkResult = await this.companyService.findCompanyByIdFromAccountId(req.tokenData.id, Number(req.params.companyId))
+      if (checkResult) {
+        let result = await this.companyService.update(Number(req.params.companyId),
+          {
+            ...body
+          })
+        if (result) {
+          return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.company.updateCompanyOK', { lang: I18nContext.current().lang }), data: result })
+        }
+      }
+    } catch (err) {
+      console.log(err)
+      if (err instanceof HttpException) {
+        return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
+      }
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
+    }
+  }
+
+  @Patch('/update-address')
+  async updateAddress(@Req() req: RequestToken, @Body() body: UpdateAddressDTO, @Res() res: Response) {
+    try {
+      let checkCompanyResult = await this.companyService.findCompanyByIdFromAccountId(req.tokenData.id, Number(req.query.companyId))
+      if (checkCompanyResult) {
+        let checkAdressResult = await this.companyService.findAddressByIdFromCompanyId(Number(req.query.addressId), Number(req.query.companyId))
+        if (checkAdressResult) {
+          let result = await this.companyService.updateAddress(Number(req.query.addressId), body)
+          if (result) {
+            return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.company.updateCompanyOK', { lang: I18nContext.current().lang }), data: result })
+          }
+        }
+
+      }
+    } catch (err) {
+      console.log(err)
+      if (err instanceof HttpException) {
+        return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
+      }
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
+    }
+  }
+
   @Get('/search')
   async getBySearch(@Req() req: RequestToken, @Res() res: Response) {
     try {
@@ -88,7 +136,7 @@ export class CompanyController {
   async getOneCompany(@Req() req: RequestToken, @Res() res: Response) {
     try {
       let result = await this.companyService.getById(Number(req.params.companyId))
-      return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.company.getCompanyOK', { lang: I18nContext.current().lang }), data: result })
+      return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.company.updateCompanyOK', { lang: I18nContext.current().lang }), data: result })
     } catch (err) {
       console.log(err)
       if (err instanceof HttpException) {
