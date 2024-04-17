@@ -14,23 +14,23 @@ import { SkillsCandidate } from './database/skill_candidate.entity';
 export class CandidateService {
     constructor(
         @InjectRepository(Candidate)
-        private readonly candidateRespository: Repository<Candidate>,
+        private readonly candidateRepository: Repository<Candidate>,
         @InjectRepository(CertificateCandidate)
-        private readonly certificateCandidateRespository: Repository<CertificateCandidate>,
+        private readonly certificateCandidateRepository: Repository<CertificateCandidate>,
         @InjectRepository(EducationCandidate)
-        private readonly educationCandidateRespository: Repository<EducationCandidate>,
+        private readonly educationCandidateRepository: Repository<EducationCandidate>,
         @InjectRepository(ExperienceCandidate)
-        private readonly experienceCandidateRespository: Repository<ExperienceCandidate>,
+        private readonly experienceCandidateRepository: Repository<ExperienceCandidate>,
         @InjectRepository(ProjectCandidate)
-        private readonly projectCandidateRespository: Repository<ProjectCandidate>,
+        private readonly projectCandidateRepository: Repository<ProjectCandidate>,
         @InjectRepository(SkillsCandidate)
-        private readonly skillCandidateRespository: Repository<SkillsCandidate>,
+        private readonly skillCandidateRepository: Repository<SkillsCandidate>,
         private readonly i18n: I18nService
     ) { }
     async createCertificate(createData: any) {
         try {
-            const newItem = await this.certificateCandidateRespository.create({ ...createData })
-            await this.certificateCandidateRespository.save(newItem)
+            const newItem = await this.certificateCandidateRepository.create({ ...createData })
+            await this.certificateCandidateRepository.save(newItem)
             return newItem
         } catch (error) {
             if (error instanceof HttpException) {
@@ -43,8 +43,8 @@ export class CandidateService {
 
     async createEducation(createData: any) {
         try {
-            const newItem = await this.educationCandidateRespository.create({ ...createData })
-            await this.educationCandidateRespository.save(newItem)
+            const newItem = await this.educationCandidateRepository.create({ ...createData })
+            await this.educationCandidateRepository.save(newItem)
             return newItem
         } catch (error) {
             if (error instanceof HttpException) {
@@ -57,8 +57,8 @@ export class CandidateService {
 
     async createExperience(createData: any) {
         try {
-            const newItem = await this.experienceCandidateRespository.create({ ...createData })
-            await this.experienceCandidateRespository.save(newItem)
+            const newItem = await this.experienceCandidateRepository.create({ ...createData })
+            await this.experienceCandidateRepository.save(newItem)
             return newItem
         } catch (error) {
             if (error instanceof HttpException) {
@@ -71,8 +71,8 @@ export class CandidateService {
 
     async createProject(createData: any) {
         try {
-            const newItem = await this.projectCandidateRespository.create({ ...createData })
-            await this.projectCandidateRespository.save(newItem)
+            const newItem = await this.projectCandidateRepository.create({ ...createData })
+            await this.projectCandidateRepository.save(newItem)
             return newItem
         } catch (error) {
             if (error instanceof HttpException) {
@@ -85,8 +85,8 @@ export class CandidateService {
 
     async createSkill(createData: any) {
         try {
-            const newItem = await this.skillCandidateRespository.create({ ...createData })
-            await this.skillCandidateRespository.save(newItem)
+            const newItem = await this.skillCandidateRepository.create({ ...createData })
+            await this.skillCandidateRepository.save(newItem)
             return newItem
         } catch (error) {
             if (error instanceof HttpException) {
@@ -99,8 +99,8 @@ export class CandidateService {
 
     async updateCertificate(id: number, updateData: any) {
         try {
-            await this.certificateCandidateRespository.update(id, { ...updateData, updated_at: new Date() })
-            const updatedItem = await this.certificateCandidateRespository.findOneBy({ id });
+            await this.certificateCandidateRepository.update(id, { ...updateData, updated_at: new Date() })
+            const updatedItem = await this.certificateCandidateRepository.findOneBy({ id });
             return updatedItem
         } catch (error) {
             if (error instanceof HttpException) {
@@ -113,8 +113,8 @@ export class CandidateService {
 
     async updateEducation(id: number, updateData: any) {
         try {
-            await this.educationCandidateRespository.update(id, { ...updateData, updated_at: new Date() });
-            const updatedItem = await this.educationCandidateRespository.findOneBy({ id });
+            await this.educationCandidateRepository.update(id, { ...updateData, updated_at: new Date() });
+            const updatedItem = await this.educationCandidateRepository.findOneBy({ id });
             return updatedItem;
         } catch (error) {
             if (error instanceof HttpException) {
@@ -127,8 +127,8 @@ export class CandidateService {
 
     async updateExperience(id: number, updateData: any) {
         try {
-            await this.experienceCandidateRespository.update(id, { ...updateData, updated_at: new Date() });
-            const updatedItem = await this.experienceCandidateRespository.findOneBy({ id });
+            await this.experienceCandidateRepository.update(id, { ...updateData, updated_at: new Date() });
+            const updatedItem = await this.experienceCandidateRepository.findOneBy({ id });
             return updatedItem;
         } catch (error) {
             if (error instanceof HttpException) {
@@ -141,8 +141,8 @@ export class CandidateService {
 
     async updateProject(id: number, updateData: any) {
         try {
-            await this.projectCandidateRespository.update(id, { ...updateData, updated_at: new Date() });
-            const updatedItem = await this.projectCandidateRespository.findOneBy({ id });
+            await this.projectCandidateRepository.update(id, { ...updateData, updated_at: new Date() });
+            const updatedItem = await this.projectCandidateRepository.findOneBy({ id });
             return updatedItem;
         } catch (error) {
             if (error instanceof HttpException) {
@@ -155,8 +155,8 @@ export class CandidateService {
 
     async updateSkill(id: number, updateData: any) {
         try {
-            await this.skillCandidateRespository.update(id, { ...updateData, updated_at: new Date() });
-            const updatedItem = await this.skillCandidateRespository.findOneBy({ id });
+            await this.skillCandidateRepository.update(id, { ...updateData, updated_at: new Date() });
+            const updatedItem = await this.skillCandidateRepository.findOneBy({ id });
             return updatedItem;
         } catch (error) {
             if (error instanceof HttpException) {

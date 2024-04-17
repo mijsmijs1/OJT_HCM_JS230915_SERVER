@@ -23,7 +23,8 @@ export class CompanyModule implements NestModule {
       .apply(AuthenticateJWTMiddleware)
       .forRoutes(
         { path: "company/create-company", method: RequestMethod.POST, version: '1' },
-        { path: "company/create-address/:companyId", method: RequestMethod.POST, version: '1' }
+        { path: "company/create-address/:companyId", method: RequestMethod.POST, version: '1' },
+        { path: "/:companyId", method: RequestMethod.GET, version: '1' }
       )
   }
 }

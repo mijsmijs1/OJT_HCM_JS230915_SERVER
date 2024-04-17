@@ -116,4 +116,27 @@ export class CompanyService {
         }
 
     }
+
+    async getById(companyId: number) {
+        try {
+            let company = await this.companyRepository.findOne({
+                where: { id: companyId },
+                relations: ['address_companies', 'type_company', 'jobs'] // Thêm các quan hệ mà bạn muốn load
+            });
+
+            if (!company) {
+                throw new HttpException(this.i18n.t('err-message.errors.NotFound', { lang: I18nContext.current().lang }), HttpStatus.NOT_FOUND, { cause: "Not Found" })
+            }
+            return company;
+
+        } catch (error) {
+            if (error instanceof HttpException) {
+                throw error
+            } else {
+                throw new HttpException(this.i18n.t('err-message.errors.databaseConnectFailed', { lang: I18nContext.current().lang }), HttpStatus.BAD_GATEWAY, { cause: "Bad Gateway" })
+            }
+
+        }
+
+    }
 }

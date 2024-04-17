@@ -1,4 +1,4 @@
-import { Body, Controller, HttpException, HttpStatus, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Post, Req, Res } from '@nestjs/common';
 import { CompanyService } from './company.service';
 import { RegisterCompanyDTO } from './dtos/register-company.dto';
 import { Response } from 'express';
@@ -65,6 +65,20 @@ export class CompanyController {
       console.log(error)
       if (error instanceof HttpException) {
         return res.status(error.getStatus()).json({ message: error.getResponse().toString(), error: error.cause })
+      }
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
+    }
+  }
+
+  @Get('/:companyId')
+  async getOneCompany(@Req() req: RequestToken, @Res() res: Response) {
+    try {
+      let result = await this.companyService.getById(Number(req.params.companyId))
+      return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.auth.decodeTokenOK', { lang: I18nContext.current().lang }), data: result })
+    } catch (err) {
+      console.log(err)
+      if (err instanceof HttpException) {
+        return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
       }
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
     }
