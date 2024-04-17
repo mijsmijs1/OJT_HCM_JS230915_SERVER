@@ -40,7 +40,7 @@ export class AuthenticateJWTMiddleware {
   ) { }
   async use(@Req() req: RequestToken, @Res() res: Response, @Next() next: NextFunction) {
     try {
-      let tokenCode: string = req.header('Authorizarion')?.replace('Bearer ', '') || req.query.token || req.cookies.token;
+      let tokenCode: string = req.header('Authorization')?.replace('Bearer ', '') || req.query.token || req.cookies.token;
       if (!tokenCode || tokenCode == 'undefined') {
         return res.status(HttpStatus.UNAUTHORIZED).json({ message: this.i18n.t('err-message.errors.TokenInvalid', { lang: I18nContext.current().lang }), error: 'Unauthorized' })
       }
