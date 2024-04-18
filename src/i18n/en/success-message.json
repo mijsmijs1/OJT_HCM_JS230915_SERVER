@@ -11,8 +11,9 @@
         "decodeTokenOK": "Decoded Token Successfull"
     },
     "company": {
-        "createCompany": "Create Skill Successfull",
+        "createCompany": "Create Company Successfull",
         "getCompanyOK": " Get Company Successfull",
+        "getAddressOK": " Get Address Successfull",
         "updateCompanyOK": " Update Company Successfull"
     },
     "candidate": {
@@ -26,5 +27,11 @@
         "updateExperience": "Update Experience Successfull",
         "updateProject": "Update Project Successfull",
         "updateSkill": "Update Skill Successfull"
+    },
+    "job": {
+        "createJob": "Create Job Successfull",
+        "getJobOK": " Get Job Successfull",
+        "getTypeJobOK": " Get Type of Job Successfull",
+        "updateJobOK": " Update Job Successfull"
     }
 }

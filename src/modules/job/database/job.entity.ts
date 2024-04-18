@@ -1,9 +1,10 @@
 import { Company } from "src/modules/company/database/company.entity";
 import { Location } from "src/modules/company/database/location.entity";
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { TypeJob } from "./typeJob.entity";
 import { LevelJob } from "./levelJob.entity";
 import { Candidate } from "src/modules/candidate/database/candidate.entity";
+import { Status } from "src/constant/enum";
 
 @Entity()
 export class Job {
@@ -25,14 +26,17 @@ export class Job {
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     updated_at: Date
 
-    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @Column({ type: 'timestamp' })
     expire_at: Date
 
     @Column()
-    conpany_id: number;
+    company_id: number;
+
+    @Column({ default: Status.active })
+    status: Status;
 
     @ManyToOne(() => Company, company => company.jobs)
-    @JoinColumn({ name: 'conpany_id' })
+    @JoinColumn({ name: 'company_id' })
     company: Company;
 
     @Column()
@@ -43,12 +47,20 @@ export class Job {
     location: Location;
 
     // Quan hệ nhiều-nhiều với TypeJob thông qua bảng trung gian Types_Jobs
-    @ManyToMany(() => TypeJob, typeJob => typeJob.jobs)
+    // @ManyToMany(() => TypeJob, typeJob => typeJob.jobs)
+    // typeJobs: TypeJob[];
+
+    @ManyToMany(() => TypeJob, { cascade: true })
+    @JoinTable()
     typeJobs: TypeJob[];
 
-    // Quan hệ nhiều-nhiều với TypeJob thông qua bảng trung gian Levels_Jobs
-    @ManyToMany(() => LevelJob, levelJob => levelJob.jobs)
-    levelJobs: TypeJob[];
+
+    @Column()
+    levelJob_id: number
+
+    // Quan hệ một-nhiều với LevelJob
+    @ManyToOne(() => LevelJob, levelJob => levelJob.jobs)
+    levelJob: LevelJob;
 
     @ManyToMany(() => Candidate, candidate => candidate.jobs)
     candidates: Candidate[];
