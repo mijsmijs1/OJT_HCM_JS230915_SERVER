@@ -11,9 +11,10 @@ import { RedisService } from 'src/shared/utils/redis/redis';
 import { Type_Company } from './database/type_company.entity';
 import { Address_Company } from './database/address_company.entity';
 import { Location } from './database/location.entity';
+import { Jobs_Candidates } from '../job/database/jobs_candidates.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Candidate, Company, Account_Company, Type_Company, Address_Company, Location])],
+  imports: [TypeOrmModule.forFeature([Candidate, Company, Account_Company, Type_Company, Address_Company, Location, Jobs_Candidates])],
   controllers: [CompanyController],
   providers: [CompanyService, AuthService, RedisService]
 })

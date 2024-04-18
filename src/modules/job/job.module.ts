@@ -11,9 +11,10 @@ import { RedisService } from 'src/shared/utils/redis/redis';
 import { AuthenticateJWTMiddleware } from 'src/shared/middleware/authen-jwr.middleware';
 import { Account_Company } from '../company/database/account_company.entity';
 import { Location } from '../company/database/location.entity';
+import { Jobs_Candidates } from './database/jobs_candidates.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Candidate, Job, LevelJob, TypeJob, Account_Company, Location])],
+  imports: [TypeOrmModule.forFeature([Candidate, Job, LevelJob, TypeJob, Account_Company, Location, Jobs_Candidates])],
   controllers: [JobController],
   providers: [JobService, AuthService, RedisService]
 })

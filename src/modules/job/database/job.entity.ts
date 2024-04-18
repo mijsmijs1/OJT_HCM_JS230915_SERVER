@@ -62,6 +62,7 @@ export class Job {
     @ManyToOne(() => LevelJob, levelJob => levelJob.jobs)
     levelJob: LevelJob;
 
-    @ManyToMany(() => Candidate, candidate => candidate.jobs)
+    @ManyToMany(() => Candidate, { cascade: true })
+    @JoinTable()
     candidates: Candidate[];
 }
