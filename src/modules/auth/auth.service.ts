@@ -7,6 +7,7 @@ import { RegisterAuthDTO } from './dtos/register-auth.dto';
 import { Role } from 'src/constant/enum';
 import { Account_Company } from '../company/database/account_company.entity';
 import { SecureUtils } from 'src/shared/utils/secure.util';
+import { Jobs_Candidates } from '../job/database/jobs_candidates.entity';
 
 
 @Global()
@@ -15,6 +16,8 @@ export class AuthService {
     constructor(
         @InjectRepository(Candidate)
         private readonly candidateRepository: Repository<Candidate>,
+        @InjectRepository(Jobs_Candidates)
+        private readonly jobCandidateRepository: Repository<Jobs_Candidates>,
         @InjectRepository(Account_Company)
         private readonly accountCompanyRepository: Repository<Account_Company>,
         private readonly i18n: I18nService
@@ -138,6 +141,49 @@ export class AuthService {
 
         }
     }
+
+    async findJobApplicationsForCandidate(candidateId: number) {
+        try {
+            let jobApplications = await this.jobCandidateRepository.findOne({
+                where: {
+                    candidate: { id: candidateId }
+                }
+            })
+            if (!jobApplications) {
+                throw new HttpException(this.i18n.t('err-message.errors.NotFound', { lang: I18nContext.current().lang }), HttpStatus.NOT_FOUND, { cause: "Not Found" })
+            }
+            return jobApplications
+        } catch (error) {
+            if (error instanceof HttpException) {
+                throw error
+            } else {
+                throw new HttpException(this.i18n.t('err-message.errors.databaseConnectFailed', { lang: I18nContext.current().lang }), HttpStatus.BAD_GATEWAY, { cause: "Bad Gateway" })
+            }
+
+        }
+    }
+
+    async findJobApplicationsForCompany(jobId: number) {
+        try {
+            let jobApplications = await this.jobCandidateRepository.findOne({
+                where: {
+                    job: { id: jobId }
+                }
+            })
+            if (!jobApplications) {
+                throw new HttpException(this.i18n.t('err-message.errors.NotFound', { lang: I18nContext.current().lang }), HttpStatus.NOT_FOUND, { cause: "Not Found" })
+            }
+            return jobApplications
+        } catch (error) {
+            if (error instanceof HttpException) {
+                throw error
+            } else {
+                throw new HttpException(this.i18n.t('err-message.errors.databaseConnectFailed', { lang: I18nContext.current().lang }), HttpStatus.BAD_GATEWAY, { cause: "Bad Gateway" })
+            }
+
+        }
+    }
+
     async delete(id: number, role: string) {
         try {
             if (Role[role] == Role.candidate) {
@@ -163,7 +209,7 @@ export class AuthService {
             if (Role[role] == Role.candidate) {
                 let candidate = await this.candidateRepository.findOne({
                     where: { id: id },
-                    relations: ['education', 'experience', 'projects', 'certificates', 'skills']
+                    relations: ['education', 'experience', 'projects', 'certificates', 'skills', 'jobs']
                 });
                 if (!candidate) {
                     throw new HttpException(this.i18n.t('err-message.errors.notFoundAccountByEmail', { lang: I18nContext.current().lang }), HttpStatus.NOT_FOUND, { cause: "Not Found" })
@@ -180,7 +226,8 @@ export class AuthService {
                         'companies.address_companies.location',
                         'companies.jobs.location',
                         // 'companies.jobs.typeJobs', 
-                        'companies.jobs.levelJob'
+                        'companies.jobs.levelJob',
+                        'companies.jobs.candidates'
                     ]
                 });
                 if (!company) {

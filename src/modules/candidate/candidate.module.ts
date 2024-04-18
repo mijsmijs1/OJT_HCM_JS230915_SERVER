@@ -14,9 +14,10 @@ import { ExperienceCandidate } from './database/experience_candidate.entity';
 import { ProjectCandidate } from './database/project_candidate.entity';
 import { SkillsCandidate } from './database/skill_candidate.entity';
 import { Account_Company } from '../company/database/account_company.entity';
+import { Jobs_Candidates } from '../job/database/jobs_candidates.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Candidate, CertificateCandidate, EducationCandidate, ExperienceCandidate, ProjectCandidate, SkillsCandidate, Account_Company])],
+  imports: [TypeOrmModule.forFeature([Candidate, CertificateCandidate, EducationCandidate, ExperienceCandidate, ProjectCandidate, SkillsCandidate, Account_Company, Jobs_Candidates])],
   controllers: [CandidateController],
   providers: [CandidateService, RedisService, MailService, AuthService],
 })
@@ -30,6 +31,7 @@ export class CandidateModule implements NestModule {
         { path: "candidate/create-experience", method: RequestMethod.POST, version: '1' },
         { path: "candidate/create-project", method: RequestMethod.POST, version: '1' },
         { path: "candidate/create-skill", method: RequestMethod.POST, version: '1' },
+        { path: "candidate/create-job-application", method: RequestMethod.POST, version: '1' },
         { path: "candidate/update-certificate/:id", method: RequestMethod.PATCH, version: '1' },
         { path: "candidate/update-education/:id", method: RequestMethod.PATCH, version: '1' },
         { path: "candidate/update-experience/:id", method: RequestMethod.PATCH, version: '1' },

@@ -20,11 +20,12 @@ import { ProjectCandidate } from './modules/candidate/database/project_candidate
 import { SkillsCandidate } from './modules/candidate/database/skill_candidate.entity';
 import { Account_Company } from './modules/company/database/account_company.entity';
 import { Company } from './modules/company/database/company.entity';
+import { Jobs_Candidates } from './modules/job/database/jobs_candidates.entity';
 
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Candidate, CertificateCandidate, EducationCandidate, ExperienceCandidate, ProjectCandidate, SkillsCandidate, Account_Company, Company]),
+    TypeOrmModule.forFeature([Candidate, CertificateCandidate, EducationCandidate, ExperienceCandidate, ProjectCandidate, SkillsCandidate, Account_Company, Company, Jobs_Candidates]),
     TypeOrmModule.forRoot(config),
     MulterModule.register({
       dest: './uploads', // Đường dẫn tới thư mục lưu trữ file tải lên

@@ -165,6 +165,29 @@ export class AuthController {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
     }
   }
+
+  @Get('/job-application/:jobId')
+  async getJobApplications(@Req() req: RequestToken, @Res() res: Response) {
+    try {
+      console.log(req.tokenData)
+      let result: any
+      if (req.tokenData.name) {
+        result = await this.authService.findJobApplicationsForCandidate(req.tokenData.id)
+        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.auth.findJobApplicationOk', { lang: I18nContext.current().lang }), data: result })
+      } else if (req.tokenData.companies && req.tokenData.companies.find(item => item.jobs.find(item => item.id == Number(req.params.jobId)))) {
+        result = await this.authService.findJobApplicationsForCompany(Number(req.params.jobId))
+        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.auth.findJobApplicationOk', { lang: I18nContext.current().lang }), data: result })
+      }
+      throw new HttpException(this.i18n.t('err-message.errors.NotFound', { lang: I18nContext.current().lang }), HttpStatus.NOT_FOUND, { cause: "Not Found" })
+    } catch (err) {
+      console.log(err)
+      if (err instanceof HttpException) {
+        return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
+      }
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
+    }
+  }
+
   @Get('/refresh-token')
   async refreshToken(@Body() body: { refreshToken: string }, @Res() res: Response) {
     try {

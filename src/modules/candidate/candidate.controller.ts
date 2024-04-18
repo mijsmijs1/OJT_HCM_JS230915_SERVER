@@ -16,6 +16,7 @@ import { UpdateEducationCandidateDTO } from './dtos/update-education.dto';
 import { UpdateExperienceCandidateDTO } from './dtos/update-experience.dto';
 import { UpdateProjectCandidateDTO } from './dtos/update-project.dto';
 import { UpdateSkillsCandidateDTO } from './dtos/update-skill.dto';
+import { CreateJobsCandidatesDto } from './dtos/create-job-application.dto';
 
 @ApiTags('Auth')
 @ApiBearerAuth()
@@ -27,6 +28,23 @@ export class CandidateController {
     private readonly redisService: RedisService,
     private readonly mailService: MailService
   ) { }
+
+  @Post('/create-job-application')
+  async createApplication(@Req() req: RequestToken, @Body() body: CreateJobsCandidatesDto, @Res() res: Response) {
+    try {
+      let result = await this.candidateService.createJobApplication({ ...body, candidate_id: Number(req.tokenData.id) })
+      if (result) {
+        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.candidate.createCertificate', { lang: I18nContext.current().lang }), data: { ...result } })
+      }
+    }
+    catch (err) {
+      if (err instanceof HttpException) {
+        return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
+      }
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
+    }
+  }
+
   @Post('/create-certificate')
   async createCertificate(@Req() req: RequestToken, @Body() body: CreateCertificateCandidateDTO, @Res() res: Response) {
     try {

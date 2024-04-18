@@ -13,15 +13,20 @@ export class Jobs_Candidates {
     @Column({ type: 'varchar', length: 255 })
     content: string;
 
-    @Column({ type: 'int', default: 0 })
+    @Column({ type: 'int', default: 1 })
     status: number;
 
-    @ManyToOne(() => Job, job => job.id)
+    @ManyToOne(() => Job, job => job.candidates)
     @JoinColumn({ name: 'job_id' })
     job: Job;
 
-    @ManyToOne(() => Candidate, candidate => candidate.id)
+    @ManyToOne(() => Candidate, candidate => candidate.jobs)
     @JoinColumn({ name: 'candidate_id' })
     candidate: Candidate;
 
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    created_at: Date
+
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    updated_at: Date
 }

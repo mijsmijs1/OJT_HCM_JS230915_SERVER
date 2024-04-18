@@ -4,6 +4,7 @@ import {
     Column,
     OneToMany,
     ManyToMany,
+    JoinTable,
 } from 'typeorm';
 import { EducationCandidate } from './education_candidate.entity';
 import { ExperienceCandidate } from './experience_candidate.entity';
@@ -72,6 +73,9 @@ export class Candidate {
     @OneToMany(() => SkillsCandidate, (skill: any) => skill.candidate, { cascade: true })
     skills: SkillsCandidate[];
 
-    @ManyToMany(() => Job, job => job.candidates)
+    @ManyToMany(() => Job, { cascade: true })
+    @JoinTable()
     jobs: Job[];
+
+
 }

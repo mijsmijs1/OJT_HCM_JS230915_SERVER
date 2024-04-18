@@ -8,7 +8,8 @@
         "changePasswordOK": "Change password Successfull",
         "updateAccountOK": "Update Account Successfull",
         "deleteAccountOK": "Delete Account Successfull",
-        "decodeTokenOK": "Decoded Token Successfull"
+        "decodeTokenOK": "Decoded Token Successfull",
+        "findJobApplicationOk": "Find Job Application Successfull"
     },
     "company": {
         "createCompany": "Create Company Successfull",
