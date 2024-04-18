@@ -8,6 +8,7 @@ import { Role } from 'src/constant/enum';
 import { Account_Company } from '../company/database/account_company.entity';
 import { SecureUtils } from 'src/shared/utils/secure.util';
 
+
 @Global()
 @Injectable()
 export class AuthService {
@@ -155,5 +156,47 @@ export class AuthService {
             }
 
         }
+    }
+
+    async findByIdToSave(id: number, role: string): Promise<Candidate | Account_Company> {
+        try {
+            if (Role[role] == Role.candidate) {
+                let candidate = await this.candidateRepository.findOne({
+                    where: { id: id },
+                    relations: ['education', 'experience', 'projects', 'certificates', 'skills']
+                });
+                if (!candidate) {
+                    throw new HttpException(this.i18n.t('err-message.errors.notFoundAccountByEmail', { lang: I18nContext.current().lang }), HttpStatus.NOT_FOUND, { cause: "Not Found" })
+                }
+                return candidate
+            }
+            if (Role[role] == Role.company) {
+                let company = await this.accountCompanyRepository.findOne({
+                    where: { id: id },
+                    relations: ['companies',
+                        'companies.type_company',
+                        'companies.jobs',
+                        'companies.address_companies',
+                        'companies.address_companies.location',
+                        'companies.jobs.location',
+                        // 'companies.jobs.typeJobs', 
+                        'companies.jobs.levelJob'
+                    ]
+                });
+                if (!company) {
+                    throw new HttpException(this.i18n.t('err-message.errors.notFoundAccountByEmail', { lang: I18nContext.current().lang }), HttpStatus.NOT_FOUND, { cause: "Not Found" })
+                }
+                return company
+            }
+        } catch (error) {
+            console.log(error)
+            if (error instanceof HttpException) {
+                throw error
+            } else {
+                throw new HttpException(this.i18n.t('err-message.errors.databaseConnectFailed', { lang: I18nContext.current().lang }), HttpStatus.BAD_GATEWAY, { cause: "Bad Gateway" })
+            }
+
+        }
+
     }
 }

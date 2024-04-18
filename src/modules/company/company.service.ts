@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Get, HttpException, HttpStatus, Injectable, Req } from '@nestjs/common';
 import { Company } from './database/company.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Account_Company } from './database/account_company.entity';
@@ -160,6 +160,29 @@ export class CompanyService {
 
     }
 
+
+    async getAddress() {
+        try {
+            let company = await this.addressCompanyRepository.find({
+                relations: ['location']
+            })
+
+            if (!company) {
+                throw new HttpException(this.i18n.t('err-message.errors.NotFound', { lang: I18nContext.current().lang }), HttpStatus.NOT_FOUND, { cause: "Not Found" })
+            }
+            return company;
+
+        } catch (error) {
+            if (error instanceof HttpException) {
+                throw error
+            } else {
+                throw new HttpException(this.i18n.t('err-message.errors.databaseConnectFailed', { lang: I18nContext.current().lang }), HttpStatus.BAD_GATEWAY, { cause: "Bad Gateway" })
+            }
+
+        }
+
+    }
+
     async getSearch(page: number, pageSize: number, keyword: string, address: string) {
         try {
             let skip = 0;
@@ -226,4 +249,6 @@ export class CompanyService {
             }
         }
     }
+
+
 }

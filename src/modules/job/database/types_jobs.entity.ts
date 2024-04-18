@@ -6,12 +6,14 @@ import { TypeJob } from "./typeJob.entity";
 export class Types_Jobs {
     @PrimaryGeneratedColumn()
     id: number;
+
     // Khóa ngoại đến bảng Job
-    @ManyToOne(() => Job, job => job.id)
+    @ManyToOne(() => Job, job => job.typeJobs)
     @JoinColumn({ name: 'job_id' })
     job: Job;
+
     // Khóa ngoại đến bảng TypeJob
-    @ManyToOne(() => TypeJob, typeJob => typeJob.id)
+    @ManyToOne(() => TypeJob, typeJob => typeJob.jobs)
     @JoinColumn({ name: "type_job_id" })
     typeJob: TypeJob;
 }

@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Job } from "./job.entity";
 
 @Entity()
@@ -15,6 +15,10 @@ export class TypeJob {
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     updated_at: Date;
 
-    @ManyToMany(() => Job, job => job.typeJobs)
+    // @ManyToMany(() => Job, job => job.typeJobs)
+    // jobs: Job[];
+
+    @ManyToMany(() => Job, { cascade: true })
+    @JoinTable()
     jobs: Job[];
 }

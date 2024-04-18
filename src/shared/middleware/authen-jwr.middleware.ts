@@ -61,7 +61,7 @@ export class AuthenticateJWTMiddleware {
         req.tokenData = JSON.parse(dataFromRedis);
         next();
       } else {
-        let result = await this.authService.findByEmail((decodedData as any).email, "all");
+        let result = await this.authService.findById((decodedData as any).id, (decodedData as any).name ? "candidate" : "company");
         if (!result) {
           return res.status(HttpStatus.UNAUTHORIZED).json({ message: this.i18n.t('err-message.errors.TokenInvalid', { lang: I18nContext.current().lang }), error: 'Unauthorized' })
         }
@@ -71,9 +71,11 @@ export class AuthenticateJWTMiddleware {
         if ((decodedData as any).updateAt != (result as any).updateAt) {
           return res.status(HttpStatus.UNAUTHORIZED).json({ message: this.i18n.t('err-message.errors.TokenInvalid', { lang: I18nContext.current().lang }), error: 'Unauthorized' })
         }
-        await this.redisService.redisClient.set(tokenCode, JSON.stringify(decodedData));
+        let fullData = await this.authService.findByIdToSave((decodedData as any).id, (decodedData as any).name ? "candidate" : "company");
+        await this.redisService.redisClient.set(tokenCode, JSON.stringify(fullData));
         await this.redisService.redisClient.expireAt(tokenCode, (decodedData as any).exp);
-        req.tokenData = decodedData;
+        req.tokenData = fullData;
+        console.log(req.tokenData)
         next();
       }
     } catch (err) {

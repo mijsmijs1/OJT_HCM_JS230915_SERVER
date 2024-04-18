@@ -55,8 +55,7 @@ export class CompanyController {
   @Post('/create-address/:companyId')
   async createAddress(@Req() req: RequestToken, @Body() body: CreateAddressDTO, @Res() res: Response) {
     try {
-      let result = await this.companyService.findCompanyByIdFromAccountId(req.tokenData.id, Number(req.params.companyId))
-      if (result) {
+      if (req.tokenData.companies.find(item => item.id == Number(req.params.companyId))) {
         await this.companyService.createAddress(Number(req.params.companyId), {
           ...body,
           account_company_id: req.tokenData.id
@@ -64,6 +63,7 @@ export class CompanyController {
         // let message = await i18n.t('success-message.auth.registerOk')
         return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.company.createCompany', { lang: I18nContext.current().lang }) })
       }
+      throw new HttpException(this.i18n.t('err-message.errors.NotFound', { lang: I18nContext.current().lang }), HttpStatus.NOT_FOUND, { cause: "Not Found" })
     } catch (error) {
       console.log(error)
       if (error instanceof HttpException) {
@@ -76,8 +76,7 @@ export class CompanyController {
   @Patch('/update-company/:companyId')
   async updateCompany(@Req() req: RequestToken, @Body() body: UpdateCompanyDTO, @Res() res: Response) {
     try {
-      let checkResult = await this.companyService.findCompanyByIdFromAccountId(req.tokenData.id, Number(req.params.companyId))
-      if (checkResult) {
+      if (req.tokenData.companies.find(item => item.id == Number(req.params.companyId))) {
         let result = await this.companyService.update(Number(req.params.companyId),
           {
             ...body
@@ -86,6 +85,7 @@ export class CompanyController {
           return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.company.updateCompanyOK', { lang: I18nContext.current().lang }), data: result })
         }
       }
+      throw new HttpException(this.i18n.t('err-message.errors.NotFound', { lang: I18nContext.current().lang }), HttpStatus.NOT_FOUND, { cause: "Not Found" })
     } catch (err) {
       console.log(err)
       if (err instanceof HttpException) {
@@ -98,17 +98,13 @@ export class CompanyController {
   @Patch('/update-address')
   async updateAddress(@Req() req: RequestToken, @Body() body: UpdateAddressDTO, @Res() res: Response) {
     try {
-      let checkCompanyResult = await this.companyService.findCompanyByIdFromAccountId(req.tokenData.id, Number(req.query.companyId))
-      if (checkCompanyResult) {
-        let checkAdressResult = await this.companyService.findAddressByIdFromCompanyId(Number(req.query.addressId), Number(req.query.companyId))
-        if (checkAdressResult) {
-          let result = await this.companyService.updateAddress(Number(req.query.addressId), body)
-          if (result) {
-            return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.company.updateCompanyOK', { lang: I18nContext.current().lang }), data: result })
-          }
+      if (req.tokenData.companies.find(item => item.id == Number(req.params.companyId)).address_companies.find(item => item.id == Number(req.query.addressId))) {
+        let result = await this.companyService.updateAddress(Number(req.query.addressId), body)
+        if (result) {
+          return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.company.updateCompanyOK', { lang: I18nContext.current().lang }), data: result })
         }
-
       }
+      throw new HttpException(this.i18n.t('err-message.errors.NotFound', { lang: I18nContext.current().lang }), HttpStatus.NOT_FOUND, { cause: "Not Found" })
     } catch (err) {
       console.log(err)
       if (err instanceof HttpException) {
@@ -132,11 +128,25 @@ export class CompanyController {
     }
   }
 
+  @Get('/address')
+  async GetAdress(@Req() req: RequestToken, @Res() res: Response) {
+    try {
+      let result = await this.companyService.getAddress()
+      return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.company.getAddressOK', { lang: I18nContext.current().lang }), data: result })
+    } catch (err) {
+      console.log(err)
+      if (err instanceof HttpException) {
+        return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
+      }
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
+    }
+  }
+
   @Get('/:companyId')
   async getOneCompany(@Req() req: RequestToken, @Res() res: Response) {
     try {
       let result = await this.companyService.getById(Number(req.params.companyId))
-      return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.company.updateCompanyOK', { lang: I18nContext.current().lang }), data: result })
+      return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.company.getCompanyOK', { lang: I18nContext.current().lang }), data: result })
     } catch (err) {
       console.log(err)
       if (err instanceof HttpException) {
