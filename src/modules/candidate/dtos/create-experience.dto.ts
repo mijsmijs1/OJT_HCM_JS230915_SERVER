@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDate, IsNotEmpty, IsString } from "class-validator";
+import { Type } from "class-transformer";
+import { IsNotEmpty, IsString } from "class-validator";
 
 export class CreateExperienceCandidateDTO {
     @ApiProperty({
@@ -7,7 +8,7 @@ export class CreateExperienceCandidateDTO {
         required: false,
     })
     @IsString({ message: 'validation.COMMON_ERROR' })
-     @IsNotEmpty({ message: 'validation.COMMON_ERROR' })
+    @IsNotEmpty({ message: 'validation.COMMON_ERROR' })
     position: string;
 
     @ApiProperty({
@@ -15,23 +16,23 @@ export class CreateExperienceCandidateDTO {
         required: false,
     })
     @IsString({ message: 'validation.COMMON_ERROR' })
-     @IsNotEmpty({ message: 'validation.COMMON_ERROR' })
+    @IsNotEmpty({ message: 'validation.COMMON_ERROR' })
     company: string;
 
     @ApiProperty({
         example: '2020-01-01',
         required: false,
     })
-    @IsDate({ message: 'validation.COMMON_ERROR' })
-     @IsNotEmpty({ message: 'validation.COMMON_ERROR' })
+    @Type(() => Date)
+    @IsNotEmpty({ message: 'validation.COMMON_ERROR' })
     started_at: Date;
 
     @ApiProperty({
         example: '2022-12-31',
         required: false,
     })
-    @IsDate({ message: 'validation.COMMON_ERROR' })
-     @IsNotEmpty({ message: 'validation.COMMON_ERROR' })
+    @Type(() => Date)
+    @IsNotEmpty({ message: 'validation.COMMON_ERROR' })
     end_at: Date;
 
     @ApiProperty({
@@ -39,6 +40,6 @@ export class CreateExperienceCandidateDTO {
         required: false,
     })
     @IsString({ message: 'validation.COMMON_ERROR' })
-     @IsNotEmpty({ message: 'validation.COMMON_ERROR' })
+    @IsNotEmpty({ message: 'validation.COMMON_ERROR' })
     info: string;
 }

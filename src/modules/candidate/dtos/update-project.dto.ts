@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { Type } from "class-transformer";
 import { IsDate, IsOptional, IsString, IsUrl } from "class-validator";
 
 export class UpdateProjectCandidateDTO {
@@ -23,7 +24,7 @@ export class UpdateProjectCandidateDTO {
         example: '2023-01-01',
         required: false,
     })
-    @IsDate({ message: 'validation.COMMON_ERROR' })
+    @Type(() => Date)
     @IsOptional()
     started_at?: Date;
 
@@ -31,7 +32,7 @@ export class UpdateProjectCandidateDTO {
         example: '2023-12-31',
         required: false,
     })
-    @IsDate({ message: 'validation.COMMON_ERROR' })
+    @Type(() => Date)
     @IsOptional()
     end_at?: Date;
 
