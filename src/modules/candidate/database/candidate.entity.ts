@@ -11,7 +11,6 @@ import { ExperienceCandidate } from './experience_candidate.entity';
 import { ProjectCandidate } from './project_candidate.entity';
 import { CertificateCandidate } from './certificate_candidate.entity';
 import { SkillsCandidate } from './skill_candidate.entity';
-import { CandidateGender } from 'src/constant/enum';
 import { Job } from 'src/modules/job/database/job.entity';
 
 @Entity()
@@ -40,9 +39,10 @@ export class Candidate {
     @Column({ type: 'varchar' })
     password: string;
 
-    @Column({ nullable: true })
-    gender: CandidateGender;
 
+    @Column({ type: 'varchar', nullable: true })
+    gender: string;
+    
     @Column({ type: 'varchar', nullable: true })
     link_fb: string;
 

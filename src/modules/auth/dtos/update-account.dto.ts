@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDate, IsOptional, IsString } from "class-validator";
+import { Type } from "class-transformer";
+import { IsDate, IsIn, IsOptional, IsString } from "class-validator";
 
 export class UpdateCandidateDTO {
     @ApiProperty({
@@ -11,10 +12,11 @@ export class UpdateCandidateDTO {
     name?: string;
 
     @ApiProperty({
-        example: 'Male',
+        example: 'MALE',
         required: false,
     })
     @IsOptional()
+    @IsIn(['MALE', 'FEMALE'], { message: 'validation.COMMON_ERROR' })
     gender?: string;
 
     @ApiProperty({
@@ -61,7 +63,7 @@ export class UpdateCandidateDTO {
         example: '1990-01-01',
         required: false,
     })
-    @IsDate({ message: 'validation.COMMON_ERROR' })
+    @Type(() => Date)
     @IsOptional()
     dob?: Date;
 }

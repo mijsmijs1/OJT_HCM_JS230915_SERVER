@@ -4,7 +4,7 @@ import { Candidate } from '../candidate/database/candidate.entity';
 import { Repository } from 'typeorm';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { RegisterAuthDTO } from './dtos/register-auth.dto';
-import { Role } from 'src/constant/enum';
+import { CandidateGender, Role } from 'src/constant/enum';
 import { Account_Company } from '../company/database/account_company.entity';
 import { SecureUtils } from 'src/shared/utils/secure.util';
 import { Jobs_Candidates } from '../job/database/jobs_candidates.entity';

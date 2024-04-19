@@ -130,6 +130,7 @@ export class AuthController {
       let result = await this.authService.update(req.tokenData.id, body, "candidate")
       if (result) {
         let newCandidate = await this.authService.findById(req.tokenData.id, 'candidate')
+        console.log(newCandidate)
         if (newCandidate) {
           const token_key = `bl_${req.header('Authorization')?.replace('Bearer ', '')}`;
           await this.redisService.redisClient.set(token_key, req.header('Authorization')?.replace('Bearer ', ''));
