@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsNotEmpty, IsString, MaxLength, MinLength } from "class-validator";
+import { IsEmail, IsNotEmpty, IsString, Length, MaxLength, MinLength } from "class-validator";
 import { i18nValidationMessage } from "nestjs-i18n";
 
 
@@ -8,26 +8,26 @@ export class RegisterAuthDTO {
         example: 'PhuQuy',
         required: true,
     })
-    @IsString({ message: 'validation.COMMON_ERROR' })
-    @IsNotEmpty({ message: 'validation.COMMON_ERROR' })
+    @IsString({ message: 'validation.INVALID_STRING' })
+    @IsNotEmpty({ message: 'validation.NOT_EMPTY' })
     name: string;
 
     @ApiProperty({
         example: '123@gmail.com',
         required: true,
     })
-    @IsString({ message: 'validation.COMMON_ERROR' })
-    @IsNotEmpty({ message: 'validation.COMMON_ERROR' })
-    @IsEmail({}, { message: 'validation.COMMON_ERROR' })
+    @IsString({ message: 'validation.INVALID_STRING' })
+    @IsNotEmpty({ message: 'validation.NOT_EMPTY' })
+    @IsEmail({}, { message: 'validation.INVALID_EMAIL' })
     email: string;
 
     @ApiProperty({
-        example: '123456',
+        example: '123456aA@',
         required: true,
     })
-    @IsString({ message: 'validation.COMMON_ERROR' })
-    @IsNotEmpty({ message: 'validation.COMMON_ERROR' })
-    @MinLength(6, { message: 'validation.COMMON_ERROR' })
+    @IsString({ message: 'validation.INVALID_STRING' })
+    @IsNotEmpty({ message: 'validation.NOT_EMPTY' })
+    @Length(6, 12, { message: 'validation.LENGTH' })
     password: string;
 
 

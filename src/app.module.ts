@@ -39,7 +39,7 @@ import { Jobs_Candidates } from './modules/job/database/jobs_candidates.entity';
       resolvers: [
         { use: QueryResolver, options: ['lang'] },
         AcceptLanguageResolver,
-        new HeaderResolver(['x-lang']),
+        new HeaderResolver(['x-lang', 'language']),
       ]
     }),
     UserModule,
