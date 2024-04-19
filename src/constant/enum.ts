@@ -4,9 +4,9 @@ export enum Role {
 }
 
 export enum CandidateGender {
-  MALE,
-  FEMALE,
-  OTHER
+  MALE = 'MALE',
+  FEMALE = 'FEMALE',
+  OTHER = 'OTHER'
 }
 
 export enum Status {
