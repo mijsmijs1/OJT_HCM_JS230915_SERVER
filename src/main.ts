@@ -24,7 +24,7 @@ async function bootstrap() {
   app.useGlobalPipes(new I18nValidationPipe());
   app.useGlobalFilters(
     new I18nValidationExceptionFilter({
-      detailedErrors: false,
+      detailedErrors: true,
       errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY
     })
   );

@@ -35,7 +35,6 @@ export class JobController {
   @Patch('/update-job/:jobId')
   async updateJob(@Req() req: RequestToken, @Body() body: UpdateJobDto, @Res() res: Response) {
     try {
-      console.log(body)
       if (req.tokenData.companies.find(item => item.id == Number(body.company_id)).jobs.find(item => item.id == Number(req.params.jobId))) {
         let result = await this.jobService.update(Number(req.params.jobId), body)
         if (result) {
