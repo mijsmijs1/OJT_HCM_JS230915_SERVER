@@ -74,7 +74,7 @@ export class AuthenticateJWTMiddleware {
         let fullData = await this.authService.findByIdToSave((decodedData as any).id, (decodedData as any).name ? "candidate" : "company");
         await this.redisService.redisClient.set(tokenCode, JSON.stringify(fullData));
         await this.redisService.redisClient.expireAt(tokenCode, (decodedData as any).exp);
-        req.tokenData = fullData;
+        req.tokenData = { ...fullData, exp: (decodedData as any).exp };
         console.log(req.tokenData)
         next();
       }
