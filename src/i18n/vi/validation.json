@@ -7,7 +7,5 @@
     "MAX": "{property} with value: \"{value}\" needs to be less than {constraints.0}, ow and {message}",
     "MINLENGTH": "The {property} with the value \"{value}\" must contain at least {constraints.0} characters.",
     "MAXLENGTH": "The {property} with the value \"{value}\" must not exceed {constraints.0} characters.",
-    "LENGTH": "The {property} must be at least {constraints.0} characters and cannot be longer than {constraints.1} characters.",
-    "COMMON_ERROR": "Lack of compulsory registration information or invalid information.",
-    "ROLE_INVALID": "The {property} must be either 'company' or 'candidate'."
+    "COMMON_ERROR": "Thông tin bị thiếu một trường hoặc thông tin không đúng định dạng chỉ định!"
 }

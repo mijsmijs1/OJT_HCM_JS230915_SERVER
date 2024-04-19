@@ -2,6 +2,6 @@
     "errors": {
         "required": "Trường này là bắt buộc",
         "minLength": "Trường này bắt buộc phải có ít nhất $constraint1 kí tự",
-        "serverError": "Internal server error."
+        "serverError": "Lỗi Sever!."
     }
 }
