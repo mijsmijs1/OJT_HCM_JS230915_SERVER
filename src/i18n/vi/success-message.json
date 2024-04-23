@@ -1,0 +1,38 @@
+{
+    "auth": {
+        "registerOk": "Đăng ký thành công.",
+        "loginOk": "Đăng nhập thành công",
+        "LogoutOk": "Đăng xuất thành công",
+        "refreshTokenOk": "Làm mới token mới thành công",
+        "sendEmailSuccess": "Gửi email thành công",
+        "changePasswordOK": "Thay đổi mật khẩu thành công",
+        "updateAccountOK": "Cập nhật tài khoản thành công",
+        "deleteAccountOK": "Xóa tài khoản thành công",
+        "decodeTokenOK": "Giải mã token thành công",
+        "findJobApplicationOk": "Tìm kiếm đơn xin việc thành công"
+    },
+    "company": {
+        "createCompany": "Tạo công ty thành công",
+        "getCompanyOK": "Lấy thông tin công ty thành công",
+        "getAddressOK": "Lấy địa chỉ thành công",
+        "updateCompanyOK": "Cập nhật thông tin công ty thành công"
+    },
+    "candidate": {
+        "createCertificate": "Tạo chứng chỉ thành công",
+        "createEducation": "Tạo học vấn thành công",
+        "createExperience": "Tạo kinh nghiệm thành công",
+        "createProject": "Tạo dự án thành công",
+        "createSkill": "Tạo kỹ năng thành công",
+        "updateCertificate": "Cập nhật chứng chỉ thành công",
+        "updateEducation": "Cập nhật học vấn thành công",
+        "updateExperience": "Cập nhật kinh nghiệm thành công",
+        "updateProject": "Cập nhật dự án thành công",
+        "updateSkill": "Cập nhật kỹ năng thành công"
+    },
+    "job": {
+        "createJob": "Tạo công việc thành công",
+        "getJobOK": "Lấy thông tin công việc thành công",
+        "getTypeJobOK": "Lấy thông tin loại công việc thành công",
+        "updateJobOK": "Cập nhật công việc thành công"
+    }
+}

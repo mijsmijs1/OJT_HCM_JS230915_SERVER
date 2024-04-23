@@ -1,7 +1,23 @@
 {
     "errors": {
         "required": "Trường này là bắt buộc",
-        "minLength": "Trường này bắt buộc phải có ít nhất $constraint1 kí tự",
-        "serverError": "Lỗi Sever!."
+        "minLength": "Trường này phải có ít nhất $constraint1 ký tự",
+        "existingRegisterInfo": "Tài khoản đã tồn tại với tên đăng nhập hoặc email này.",
+        "databaseConnectFailed": "Không kết nối được cơ sở dữ liệu.",
+        "notFoundAccountByEmail": "Không tìm thấy tài khoản bằng email",
+        "passwordIncorret": "Mật khẩu của bạn không đúng.",
+        "lookedAccount": "Tài khoản của bạn đã bị khóa",
+        "serverError": "Lỗi máy chủ!",
+        "TokenInvalid": "Token không hợp lệ!",
+        "TokenExpired": "Token đã hết hạn",
+        "NotFound": "Không tìm thấy dữ liệu!",
+        "oldPasswordInvalid": "Mật khẩu cũ của bạn không đúng!",
+        "PermissionInvalid": "Quyền truy cập không hợp lệ!",
+        "duplicateCompanyName": "Công ty đã tồn tại với tên này."
+    },
+    "validation": {
+        "IsNotEmpty": "Trường này không thể để trống.",
+        "IsEmail": "Trường này phải là email.",
+        "MinLength6": "Trường này phải có đúng 6 ký tự."
     }
 }
