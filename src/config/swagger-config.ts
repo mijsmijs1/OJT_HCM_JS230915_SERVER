@@ -2,8 +2,8 @@ import { DocumentBuilder } from '@nestjs/swagger';
 
 //swagger
 const config = new DocumentBuilder()
-  .setTitle('E-Commerce API')
-  .setDescription('The API E-Commerce for user and admin')
+  .setTitle('CV_Managermant API')
+  .setDescription('The API CV_Managermant for user and admin')
   .setVersion('1.0')
   .addServer('http://localhost:3000/', 'Local environment')
   .addServer('https://staging.yourapi.com/', 'Staging')
