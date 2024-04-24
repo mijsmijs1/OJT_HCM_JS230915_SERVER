@@ -15,6 +15,12 @@ export class Account_Company {
     @Column({ default: false })
     email_status: boolean;
 
+    @Column({ default: "https://static-00.iconduck.com/assets.00/avatar-default-icon-2048x2048-h6w375ur.png" })
+    avatar: string;
+
+    @Column({ default: "updating" })
+    displayName: string;
+
     @Column()
     password: string;
 

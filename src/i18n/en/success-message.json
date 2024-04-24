@@ -5,6 +5,8 @@
         "LogoutOk": "Logout successfull",
         "refreshTokenOk": "Refresf new token successfull",
         "sendEmailSuccess": "Send Email Successfull",
+        "NoActiveNotice": "Your account is not yet activated. We have just sent a new activation email to your email address. Please check your email and activate it.",
+        "sendActiveEmailSuccess": "We have sent an activation email to the newly registered email address. Please check your email to complete the registration process.",
         "changePasswordOK": "Change password Successfull",
         "updateAccountOK": "Update Account Successfull",
         "deleteAccountOK": "Delete Account Successfull",
