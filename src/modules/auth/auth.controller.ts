@@ -321,7 +321,7 @@ export class AuthController {
   @Get('/check-token')
   async checkToken(@Req() req: RequestToken, @Res() res: Response) {
     try {
-      return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.auth.decodeTokenOK', { lang: I18nContext.current().lang }), data: { ...req.tokenData } })
+      return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.auth.decodeTokenOK', { lang: I18nContext.current().lang }), data: { ...req.tokenData, role: req.tokenData.name ? "candidate" : "company" } })
     } catch (err) {
       console.log(err)
       if (err instanceof HttpException) {
