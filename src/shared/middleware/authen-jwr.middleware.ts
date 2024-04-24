@@ -41,13 +41,12 @@ export class AuthenticateJWTMiddleware {
   async use(@Req() req: RequestToken, @Res() res: Response, @Next() next: NextFunction) {
     try {
       let tokenCode: string = req.header('Authorization')?.replace('Bearer ', '') || req.query.token || req.cookies.token;
-      console.log('tokenCode', tokenCode)
       if (!tokenCode || tokenCode == 'undefined') {
         return res.status(HttpStatus.UNAUTHORIZED).json({ message: this.i18n.t('err-message.errors.TokenInvalid', { lang: I18nContext.current().lang }), error: 'Unauthorized' })
       }
       const inDenyList = await this.redisService.redisClient.get(`bl_${tokenCode}`);
       if (inDenyList) {
-        console.log('inDenyList', inDenyList, typeof inDenyList)
+        // console.log('inDenyList', inDenyList, typeof inDenyList)
         return res.status(HttpStatus.UNAUTHORIZED).json({ message: this.i18n.t('err-message.errors.TokenInvalid', { lang: I18nContext.current().lang }), error: 'Unauthorized' })
       }
       let decodedData = token.decodeToken(tokenCode)
@@ -76,7 +75,7 @@ export class AuthenticateJWTMiddleware {
         await this.redisService.redisClient.set(tokenCode, JSON.stringify(fullData));
         await this.redisService.redisClient.expireAt(tokenCode, (decodedData as any).exp);
         req.tokenData = { ...fullData, exp: (decodedData as any).exp };
-        console.log(req.tokenData)
+        // console.log(req.tokenData)
         next();
       }
     } catch (err) {
