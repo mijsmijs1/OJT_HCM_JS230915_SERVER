@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Patch, Post, Req, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { LoginAuthDTO } from './dtos/login-auth.dto';
 import { RegisterAuthDTO } from './dtos/register-auth.dto';
 import { SecureUtils } from 'src/shared/utils';
@@ -16,6 +16,7 @@ import * as ejs from "ejs";
 import * as path from 'path';
 import { ChangePasswordDTO } from './dtos/change-password.dto';
 import { UpdateCandidateDTO } from './dtos/update-account.dto';
+import { CompanyService } from '../company/company.service';
 
 @ApiTags('Auth')
 @ApiBearerAuth()
@@ -32,10 +33,61 @@ export class AuthController {
   async login(@Body() body: LoginAuthDTO, @Res() res: Response) {
     try {
       let result = await this.authService.findByEmail(body.email, body.role)
+      if (!(result as any).email_status) {
+        // return res.status(HttpStatus.CONTINUE).json({ message: this.i18n.t('success-message.auth.NoActiveNotice', { lang: I18nContext.current().lang }) })
+        if (Role[body.role] == Role.candidate) {
+          const emailContent = await ejs.renderFile(path.join(__dirname, '../../../templates/send-mail.ejs'), {
+            // Truyền các dữ liệu cần thiết cho file EJS nếu có
+            title: "Account Activation",
+            dear: `Dear ${body.email
+              }, `,
+            content:
+              `Thank you for creating an account with us. To activate your account and start using our services, please click on the following
+            `,
+            linkTitle: `Click here to activate your account:`
+            ,
+            linkURL: `
+            ${process.env.API_URL}/auth/active-account-candidate?token=${token.createToken(result, String(60 * 60 * 1000))}
+            `,
+            linkContent: `
+            Activate Your Account NOW!!!
+            `
+            ,
+            senderName: "Ngụy Phú Quý"
+          });
+          this.mailService.sendMail(body.email, "[RIKKEI EDUCATION] Account Activation Email",
+            emailContent
+          )
+        } else {
+          const emailContent = await ejs.renderFile(path.join(__dirname, '../../../templates/send-mail.ejs'), {
+            // Truyền các dữ liệu cần thiết cho file EJS nếu có
+            title: "Account Activation",
+            dear: `Dear ${body.email
+              }, `,
+            content:
+              `Thank you for creating an account with us. To activate your account and start using our services, please click on the following
+            `,
+            linkTitle: `Click here to activate your account:`
+            ,
+            linkURL: `
+            ${process.env.API_URL}/company/active-account-company?token=${token.createToken(result, String(60 * 60 * 1000))}
+            `,
+            linkContent: `
+            Activate Your Account NOW!!!
+            `
+            ,
+            senderName: "Ngụy Phú Quý"
+          });
+          this.mailService.sendMail(body.email, "[RIKKEI EDUCATION] Account Activation Email",
+            emailContent
+          )
+        }
+        throw new HttpException(this.i18n.t('err-message.errors.NoActiveNotice', { lang: I18nContext.current().lang }), HttpStatus.NOT_ACCEPTABLE, { cause: 'No Active' })
+      }
       if (!(await SecureUtils.comparePasswords(body.password, result.password))) {
         throw new HttpException(this.i18n.t('err-message.errors.passwordIncorret', { lang: I18nContext.current().lang }), HttpStatus.UNAUTHORIZED, { cause: 'Unauthorized' })
       }
-      if (body.role == String(Role.candidate)) {
+      if (Role[body.role] == Role.candidate) {
         if (!(result as Candidate).isOpen) {
           throw new HttpException(this.i18n.t('err-message.errors.lookedAccount', { lang: I18nContext.current().lang }), HttpStatus.FORBIDDEN, { cause: 'Forbidden' })
         }
@@ -53,13 +105,33 @@ export class AuthController {
   @Post('/register')
   async register(@Body() body: RegisterAuthDTO, @Res() res: Response) {
     try {
-      await this.authService.create({
-        name: body.name,
-        email: body.email,
-        password: body.password
-      })
-      // let message = await i18n.t('success-message.auth.registerOk')
-      return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.auth.registerOk', { lang: I18nContext.current().lang }) })
+      let newCandidate = await this.authService.create(body)
+      if (newCandidate) {
+        const emailContent = await ejs.renderFile(path.join(__dirname, '../../../templates/send-mail.ejs'), {
+          // Truyền các dữ liệu cần thiết cho file EJS nếu có
+          title: "Account Activation",
+          dear: `Dear ${body.name ? body.name : body.email
+            }, `,
+          content:
+            `Thank you for creating an account with us. To activate your account and start using our services, please click on the following
+          `,
+          linkTitle: `Click here to activate your account:`
+          ,
+          linkURL: `
+          ${process.env.API_URL}/auth/active-account-candidate?token=${token.createToken(newCandidate, String(60 * 60 * 1000))}
+          `,
+          linkContent: `
+          Activate Your Account NOW!!!
+          `
+          ,
+          senderName: "Ngụy Phú Quý"
+        });
+        this.mailService.sendMail(body.email, "[RIKKEI EDUCATION] Account Activation Email",
+          emailContent
+        )
+        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.auth.sendActiveEmailSuccess', { lang: I18nContext.current().lang }) })
+      }
+
     } catch (error) {
       console.log(error)
       if (error instanceof HttpException) {
@@ -220,6 +292,23 @@ export class AuthController {
       let result = await this.authService.update(Number(req.tokenData.id), { password: await SecureUtils.hashPassword(String(req.query.newPassword)) }, String(req.query.role))
       if (result) {
         return res.status(HttpStatus.OK).send(`Your new password is: "${req.query.newPassword}"`)
+      }
+    } catch (err) {
+      console.log(err)
+      if (err instanceof HttpException) {
+        return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
+      }
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
+    }
+  }
+
+  @Get('/active-account-candidate')
+  async RegisterAccount(@Req() req: RequestToken, @Res() res: Response) {
+    try {
+      let result = await this.authService.update((req.tokenData as any).id, { email_status: true }, "candidate")
+      // let message = await i18n.t('success-message.auth.registerOk')
+      if (result) {
+        return res.status(HttpStatus.OK).send(`You have successfully actived an account with the email: ${(req.tokenData as any).email}`)
       }
     } catch (err) {
       console.log(err)

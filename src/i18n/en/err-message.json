@@ -13,7 +13,8 @@
         "NotFound": "Not Found Data!",
         "oldPasswordInvalid": "Your Old Password is wrong!",
         "PermissionInvalid": "Permission Invalid!",
-        "duplicateCompanyName": "The company has existed with the name."
+        "duplicateCompanyName": "The company has existed with the name.",
+        "NoActiveNotice": "Your account is not yet activated. We have just sent a new activation email to your email address. Please check your email and activate it."
     },
     "validation": {
         "IsNotEmpty": "This field cannot be empty.",

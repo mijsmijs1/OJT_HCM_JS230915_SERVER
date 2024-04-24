@@ -5,6 +5,7 @@
         "LogoutOk": "Đăng xuất thành công",
         "refreshTokenOk": "Làm mới token mới thành công",
         "sendEmailSuccess": "Gửi email thành công",
+        "sendActiveEmailSuccess": "Chúng tôi đã gửi email kích hoạt đến địa chỉ email vừa mới đăng kí của bạn, vui lòng kiểm tra email để hoàn tất đăng kí.",
         "changePasswordOK": "Thay đổi mật khẩu thành công",
         "updateAccountOK": "Cập nhật tài khoản thành công",
         "deleteAccountOK": "Xóa tài khoản thành công",

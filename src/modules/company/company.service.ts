@@ -9,6 +9,8 @@ import { Type_Company } from './database/type_company.entity';
 import { Address_Company } from './database/address_company.entity';
 import { Location } from './database/location.entity';
 import { Status } from 'src/constant/enum';
+import { Auth } from 'firebase-admin/lib/auth/auth';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class CompanyService {
@@ -23,16 +25,17 @@ export class CompanyService {
         private readonly addressCompanyRepository: Repository<Address_Company>,
         @InjectRepository(Location)
         private readonly locationRepository: Repository<Location>,
-        private readonly i18n: I18nService
+        private readonly i18n: I18nService,
+        private readonly authService: AuthService
     ) { }
     async create(registerData: any): Promise<any | undefined> {
         try {
-            const existingEmail = await this.accountCompanyRepository.findOneBy({ email: registerData.email })
+            const existingEmail = await this.authService.findByEmailForResgister(registerData.email, "all")
             if (existingEmail) {
                 throw new HttpException(this.i18n.t('err-message.errors.existingRegisterInfo', { lang: I18nContext.current().lang }), HttpStatus.CONFLICT, { cause: "Conflict" })
             }
             const password = await SecureUtils.hashPassword(registerData.password) as string
-            const newCompanyAccount = await this.accountCompanyRepository.create({ ...registerData, password })
+            const newCompanyAccount = await this.accountCompanyRepository.create({ ...registerData, password, email_status: true })
             await this.accountCompanyRepository.save(newCompanyAccount)
             return newCompanyAccount
         } catch (error) {

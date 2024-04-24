@@ -33,6 +33,10 @@ export class Candidate {
     @Column({ type: 'varchar', unique: true })
     email: string;
 
+    @Column({ default: false })
+    email_status: boolean;
+
+
     @Column({ nullable: true })
     phone: string;
 
@@ -42,7 +46,7 @@ export class Candidate {
 
     @Column({ type: 'varchar', nullable: true })
     gender: string;
-    
+
     @Column({ type: 'varchar', nullable: true })
     link_fb: string;
 

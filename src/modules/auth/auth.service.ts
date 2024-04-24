@@ -24,8 +24,9 @@ export class AuthService {
     ) { }
 
     async create(registerData: RegisterAuthDTO): Promise<Candidate | undefined> {
+
         try {
-            const existingEmail = await this.candidateRepository.findOneBy({ email: registerData.email })
+            const existingEmail = await this.findByEmailForResgister(registerData.email, 'all')
             if (existingEmail) {
                 throw new HttpException(this.i18n.t('err-message.errors.existingRegisterInfo', { lang: I18nContext.current().lang }), HttpStatus.CONFLICT, { cause: "Conflict" })
             }
@@ -104,7 +105,42 @@ export class AuthService {
 
         }
     }
+    async findByEmailForResgister(email: string, role: string) {
+        try {
+            if (Role[role] == Role.candidate) {
+                let candidate = await this.candidateRepository.findOneBy({ email })
+                if (!candidate) {
+                    return false
+                }
+                return true;
+            }
+            if (Role[role] == Role.company) {
+                let company = await this.accountCompanyRepository.findOneBy({ email })
+                if (!company) {
+                    return false
+                }
+                return true;
+            }
+            if (role == 'all') {
+                let candidate = await this.candidateRepository.findOneBy({ email })
+                if (!candidate) {
+                    let company = await this.accountCompanyRepository.findOneBy({ email })
+                    if (!company) {
+                        return false
+                    }
+                    return true;
+                }
+                return true;
+            }
+        } catch (error) {
+            if (error instanceof HttpException) {
+                throw error
+            } else {
+                throw new HttpException(this.i18n.t('err-message.errors.databaseConnectFailed', { lang: I18nContext.current().lang }), HttpStatus.BAD_GATEWAY, { cause: "Bad Gateway" })
+            }
 
+        }
+    }
     async findById(id: number, role: string) {
         try {
             if (Role[role] == Role.candidate) {
