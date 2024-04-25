@@ -14,6 +14,7 @@ import * as ejs from "ejs";
 import * as path from 'path';
 import { token } from 'src/shared/utils/token';
 import { MailService } from 'src/shared/utils/mail/mail.service';
+import { refreshToken } from 'firebase-admin/app';
 
 @Controller('company')
 export class CompanyController {
@@ -30,8 +31,11 @@ export class CompanyController {
       // if (checkEmail) {
       //   throw new HttpException(this.i18n.t('err-message.errors.existingRegisterInfo', { lang: I18nContext.current().lang }), HttpStatus.CONFLICT, { cause: "Conflict" })
       // }
-      let newCompany = await this.companyService.create(body)
-      if (newCompany) {
+      let newCompanyAccount = await this.companyService.create({ email: body.email, password: body.password })
+      let newCompany = await this.companyService.createCompany({ phone: body.phone, email: body.companyEmail, name: body.name, account_company_id: newCompanyAccount.id })
+      let newAddress = await this.companyService.createAddress(newCompany.id, { address: body.address, name: body.address })
+      if (newCompanyAccount) {
+
         const emailContent = await ejs.renderFile(path.join(__dirname, '../../../templates/send-mail.ejs'), {
           // Truyền các dữ liệu cần thiết cho file EJS nếu có
           title: "Account Activation",
@@ -43,7 +47,7 @@ export class CompanyController {
           linkTitle: `Click here to activate your account:`
           ,
           linkURL: `
-          ${process.env.API_URL}/company/active-account-company?token=${token.createToken(newCompany, String(60 * 60 * 1000))} 
+          ${process.env.API_URL}/company/active-account-company?token=${token.createToken(newCompanyAccount, String(60 * 60 * 1000))} 
           `,
           linkContent: `
           Activate Your Account NOW!!!
