@@ -24,6 +24,7 @@ export class CreateCompanyDTO {
         required: false,
     })
     @IsString({ message: 'validation.COMMON_ERROR' })
+    @IsOptional()
     website: string;
 
     @ApiProperty({
@@ -31,6 +32,7 @@ export class CreateCompanyDTO {
         required: false,
     })
     @IsString({ message: 'validation.COMMON_ERROR' })
+    @IsOptional()
     link_fb: string;
 
     @ApiProperty({
@@ -38,6 +40,7 @@ export class CreateCompanyDTO {
         required: false,
     })
     @IsString({ message: 'validation.COMMON_ERROR' })
+    @IsOptional()
     link_linkedin: string;
 
     @ApiProperty({
@@ -78,6 +81,4 @@ export class CreateCompanyDTO {
     @IsString({ message: 'validation.COMMON_ERROR' })
     @IsOptional()
     description: string;
-
-
 }

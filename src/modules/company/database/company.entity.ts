@@ -22,13 +22,13 @@ export class Company {
     @Column({ type: 'varchar', length: 255, default: 'https://i.pinimg.com/originals/ec/d9/c2/ecd9c2e8ed0dbbc96ac472a965e4afda.jpg' })
     logo: string;
 
-    @Column({ type: 'varchar', length: 255 })
+    @Column({ type: 'varchar', length: 255, default: "updating" })
     website: string;
 
-    @Column({ type: 'varchar', length: 255 })
+    @Column({ type: 'varchar', length: 255, default: "updating" })
     link_fb: string;
 
-    @Column({ type: 'varchar', length: 255 })
+    @Column({ type: 'varchar', length: 255, default: "updating" })
     link_linkedin: string;
 
     @Column({ default: 0 })
@@ -46,7 +46,7 @@ export class Company {
     @Column({ nullable: true })
     phone: string;
 
-    @Column({ type: 'text' })
+    @Column({ type: 'text', nullable: true })
     description: string;
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })

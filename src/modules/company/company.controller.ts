@@ -69,12 +69,12 @@ export class CompanyController {
   @Post('/create-company')
   async createCompany(@Req() req: RequestToken, @Body() body: CreateCompanyDTO, @Res() res: Response) {
     try {
-      await this.companyService.createCompany({
+      let newCompany = await this.companyService.createCompany({
         ...body,
         account_company_id: req.tokenData.id
       })
       // let message = await i18n.t('success-message.auth.registerOk')
-      return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.company.createCompany', { lang: I18nContext.current().lang }) })
+      return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.company.createCompany', { lang: I18nContext.current().lang }), data: newCompany })
     } catch (error) {
       console.log(error)
       if (error instanceof HttpException) {

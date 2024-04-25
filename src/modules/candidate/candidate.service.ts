@@ -205,7 +205,6 @@ export class CandidateService {
 
     async getCertificate() {
         try {
-            console.log('da vao')
             let data = await this.certificateCandidateRepository.find()
             return data;
         } catch (error) {
