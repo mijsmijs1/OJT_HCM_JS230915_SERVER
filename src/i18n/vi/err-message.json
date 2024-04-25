@@ -11,6 +11,7 @@
         "TokenInvalid": "Token không hợp lệ!",
         "TokenExpired": "Token đã hết hạn",
         "NotFound": "Không tìm thấy dữ liệu!",
+        "NotAdmin": "bạn không phải là quản trị viên!",
         "oldPasswordInvalid": "Mật khẩu cũ của bạn không đúng!",
         "PermissionInvalid": "Quyền truy cập không hợp lệ!",
         "duplicateCompanyName": "Công ty đã tồn tại với tên này."
