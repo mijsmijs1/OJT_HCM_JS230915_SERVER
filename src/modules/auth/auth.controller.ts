@@ -261,24 +261,28 @@ export class AuthController {
     }
   }
 
-  @Get('/refresh-token')
+  @Post('/refresh-token')
   async refreshToken(@Body() body: { refreshToken: string }, @Res() res: Response) {
     try {
       const inDenyList = await this.redisService.redisClient.get(`bl_refresh_${body.refreshToken}`);
       if (inDenyList) {
-        return res.status(HttpStatus.UNAUTHORIZED).json({ message: this.i18n.t('err-message.errors.TokenInvalid', { lang: I18nContext.current().lang }), error: 'Unauthorized' })
+        throw new HttpException(this.i18n.t('err-message.errors.TokenInvalid', { lang: I18nContext.current().lang }), HttpStatus.UNAUTHORIZED, { cause: 'Unauthorized' })
+
       }
       let refreshTokenData = token.decodeRefreshToken(body.refreshToken);
       if (refreshTokenData) {
-        let result = this.authService.findByEmail((refreshTokenData as any).email, "all");
+        let result = await this.authService.findByEmail((refreshTokenData as any).email, "all");
         if (!result) {
-          return res.status(HttpStatus.UNAUTHORIZED).json({ message: this.i18n.t('err-message.errors.TokenInvalid', { lang: I18nContext.current().lang }), error: 'Unauthorized' })
+          throw new HttpException(this.i18n.t('err-message.errors.TokenInvalid', { lang: I18nContext.current().lang }), HttpStatus.UNAUTHORIZED, { cause: 'Unauthorized' })
+
         }
         if ((refreshTokenData as any).updateAt != (result as any).updateAt) {
-          return res.status(HttpStatus.UNAUTHORIZED).json({ message: this.i18n.t('err-message.errors.TokenInvalid', { lang: I18nContext.current().lang }), error: 'Unauthorized' })
+          throw new HttpException(this.i18n.t('err-message.errors.TokenInvalid', { lang: I18nContext.current().lang }), HttpStatus.UNAUTHORIZED, { cause: 'Unauthorized' })
+
         }
         return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.auth.refreshTokenOk', { lang: I18nContext.current().lang }), accessToken: token.createToken(result) })
       }
+      throw new HttpException(this.i18n.t('err-message.errors.TokenInvalid', { lang: I18nContext.current().lang }), HttpStatus.UNAUTHORIZED, { cause: 'Unauthorized' })
     } catch (err) {
       if (err instanceof HttpException) {
         return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })

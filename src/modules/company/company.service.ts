@@ -162,7 +162,29 @@ export class CompanyService {
         }
 
     }
+    async getAll(accounntId: number) {
+        try {
+            let companies = await this.companyRepository.find({
+                where: { account_company_id: accounntId },
+                select: ["id", "name", "logo", "size", "status"],
+                relations: ["type_company"]
+            });
 
+            if (!companies) {
+                throw new HttpException(this.i18n.t('err-message.errors.NotFound', { lang: I18nContext.current().lang }), HttpStatus.NOT_FOUND, { cause: "Not Found" })
+            }
+            return companies;
+
+        } catch (error) {
+            if (error instanceof HttpException) {
+                throw error
+            } else {
+                throw new HttpException(this.i18n.t('err-message.errors.databaseConnectFailed', { lang: I18nContext.current().lang }), HttpStatus.BAD_GATEWAY, { cause: "Bad Gateway" })
+            }
+
+        }
+
+    }
 
     async getAddress() {
         try {
