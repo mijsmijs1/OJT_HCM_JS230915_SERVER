@@ -189,6 +189,19 @@ export class CompanyController {
     }
   }
 
+  @Get('/get-all')
+  async getAllCompany(@Req() req: RequestToken, @Res() res: Response) {
+    try {
+      let result = await this.companyService.getAll(Number(req.tokenData.id))
+      return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.company.getCompanyOK', { lang: I18nContext.current().lang }), data: result })
+    } catch (err) {
+      console.log(err)
+      if (err instanceof HttpException) {
+        return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
+      }
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
+    }
+  }
   @Get('/:companyId')
   async getOneCompany(@Req() req: RequestToken, @Res() res: Response) {
     try {

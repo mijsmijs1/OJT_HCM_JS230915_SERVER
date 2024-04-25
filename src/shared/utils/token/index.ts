@@ -1,7 +1,7 @@
 import { sign, verify } from "jsonwebtoken"
 
 export const token = {
-    createToken: (data: any, time: string = String(15 * 24 * 60 * 60 * 1000)) => {
+    createToken: (data: any, time: string = String(15 * 60 * 1000)) => {
         let token = sign({ ...data }, process.env.TOKEN_KEY, { expiresIn: time });
         return token;
     },
