@@ -10,9 +10,9 @@ export enum CandidateGender {
 }
 
 export enum Status {
-  active,
-  block,
-  inactive
+  active = 'active',
+  block = 'block',
+  inactive = 'inactive'
 }
 
 // rating.enum.ts

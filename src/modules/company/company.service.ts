@@ -51,13 +51,12 @@ export class CompanyService {
         try {
             let newCompany = new Company();
             newCompany.name = createData.name;
-            newCompany.website = createData.website;
-            newCompany.link_fb = createData.link_fb;
-            newCompany.link_linkedin = createData.link_linkedin;
+            createData.website && (newCompany.website = createData.website);
+            createData.link_fb && (newCompany.link_fb = createData.link_fb);
+            createData.link_linkedin && (newCompany.link_linkedin = createData.link_linkedin);
             newCompany.email = createData.email;
             newCompany.phone = createData.phone;
-            newCompany.description = createData.description;
-            newCompany.description = createData.description;
+            createData.description && (newCompany.description = createData.description);
             newCompany.account_company_id = createData.account_company_id;
             let type_company = new Type_Company();
             await this.typeCompanyRepository.save(type_company);
