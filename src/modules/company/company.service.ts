@@ -35,7 +35,7 @@ export class CompanyService {
                 throw new HttpException(this.i18n.t('err-message.errors.existingRegisterInfo', { lang: I18nContext.current().lang }), HttpStatus.CONFLICT, { cause: "Conflict" })
             }
             const password = await SecureUtils.hashPassword(registerData.password) as string
-            const newCompanyAccount = await this.accountCompanyRepository.create({ ...registerData, password, email_status: true })
+            const newCompanyAccount = await this.accountCompanyRepository.create({ ...registerData, password })
             await this.accountCompanyRepository.save(newCompanyAccount)
             return newCompanyAccount
         } catch (error) {
