@@ -34,8 +34,8 @@ export class Company {
     @Column({ default: 0 })
     follower: number;
 
-    @Column({ default: 1 })
-    size: number;
+    @Column({ default: "1-10 nhân viên" })
+    size: string;
 
     @Column({ default: Status.active })
     status: Status;
@@ -48,6 +48,7 @@ export class Company {
 
     @Column({ type: 'text', nullable: true })
     description: string;
+
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     created_at: Date;

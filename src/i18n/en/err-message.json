@@ -14,7 +14,12 @@
         "oldPasswordInvalid": "Your Old Password is wrong!",
         "PermissionInvalid": "Permission Invalid!",
         "duplicateCompanyName": "The company has existed with the name.",
-        "NoActiveNotice": "Your account is not yet activated. We have just sent a new activation email to your email address. Please check your email and activate it."
+        "NoActiveNotice": "Your account is not yet activated. We have just sent a new activation email to your email address. Please check your email and activate it.",
+        "AlreadySentMail": "We have already sent an email to you. Please check your email and verify, or login again after one minute.",
+        "conflict": {
+            "name": "The name is already in use.",
+            "email": "The email is already in use."
+        }
     },
     "validation": {
         "IsNotEmpty": "This field cannot be empty.",

@@ -17,7 +17,7 @@ export class Address_Company {
     @Column({ type: 'varchar', length: 255 })
     address: string;
 
-    @Column({ type: "varchar", length: 255, default: "updating" })
+    @Column({ type: "text" })
     map_url: string;
 
     @Column()
@@ -27,4 +27,9 @@ export class Address_Company {
     @JoinColumn({ name: 'location_id' })
     location: Location;
 
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    created_at: Date;
+
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    updated_at: Date;
 }
