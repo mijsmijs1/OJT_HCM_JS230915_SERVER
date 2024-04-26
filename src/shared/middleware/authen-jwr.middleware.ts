@@ -59,6 +59,7 @@ export class AuthenticateJWTMiddleware {
       const dataFromRedis = await this.redisService.redisClient.get(tokenCode);
       if (dataFromRedis != '{}' && dataFromRedis && decodedData !== 'null') {
         req.tokenData = JSON.parse(dataFromRedis);
+        // console.log('redis', req.tokenData)
         next();
       } else {
         let result = await this.authService.findById((decodedData as any).id, (decodedData as any).name ? "candidate" : "company");

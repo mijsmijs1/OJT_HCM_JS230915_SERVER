@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsString, IsEmail, IsOptional, IsIn } from "class-validator";
+import { IsNotEmpty, IsString, IsEmail, IsOptional, IsIn, IsNumber } from "class-validator";
 
 export class UpdateCompanyDTO {
 
@@ -43,21 +43,14 @@ export class UpdateCompanyDTO {
     @IsOptional()
     link_linkedin: string;
 
-    @ApiProperty({
-        example: '1000',
-        required: false,
-    })
-    @IsNotEmpty({ message: 'validation.COMMON_ERROR' })
-    @IsOptional()
-    follower?: number;
 
     @ApiProperty({
-        example: '1',
+        example: "51-200 nhân viên",
         required: false,
     })
     @IsNotEmpty({ message: 'validation.COMMON_ERROR' })
     @IsOptional()
-    size?: number;
+    size?: string;
 
     @ApiProperty({
         example: 'company@example.com',
@@ -90,4 +83,13 @@ export class UpdateCompanyDTO {
     @IsIn(['active', 'inactive'], { message: 'validation.COMMON_ERROR' })
     @IsOptional()
     status: string;
+
+    @ApiProperty({
+        example: 1,
+        required: true,
+    })
+    @IsNumber({}, { message: 'validation.COMMON_ERROR' })
+    @IsOptional()
+    type_company_id: number;
+
 }

@@ -34,55 +34,64 @@ export class AuthController {
     try {
       let result = await this.authService.findByEmail(body.email, body.role)
       if (!(result as any).email_status) {
-        // return res.status(HttpStatus.CONTINUE).json({ message: this.i18n.t('success-message.auth.NoActiveNotice', { lang: I18nContext.current().lang }) })
-        if (Role[body.role] == Role.candidate) {
-          const emailContent = await ejs.renderFile(path.join(__dirname, '../../../templates/send-mail.ejs'), {
-            // Truyền các dữ liệu cần thiết cho file EJS nếu có
-            title: "Account Activation",
-            dear: `Dear ${body.email
-              }, `,
-            content:
-              `Thank you for creating an account with us. To activate your account and start using our services, please click on the following
+        const now = Date.now();
+        const lastEmailSentAt = JSON.parse(await this.redisService.redisClient.get(`lastEmailSentAt:${body.email}`))
+        if (now - lastEmailSentAt < 60 * 1000) {
+          throw new HttpException(this.i18n.t('err-message.errors.AlreadySentMail', { lang: I18nContext.current().lang }), HttpStatus.NOT_ACCEPTABLE, { cause: 'Already Sent Mail' })
+        } else {
+          if (Role[body.role] == Role.candidate) {
+            const emailContent = await ejs.renderFile(path.join(__dirname, '../../../templates/send-mail.ejs'), {
+              // Truyền các dữ liệu cần thiết cho file EJS nếu có
+              title: "Account Activation",
+              dear: `Dear ${body.email
+                }, `,
+              content:
+                `Thank you for creating an account with us. To activate your account and start using our services, please click on the following
             `,
-            linkTitle: `Click here to activate your account:`
-            ,
-            linkURL: `
+              linkTitle: `Click here to activate your account:`
+              ,
+              linkURL: `
             ${process.env.API_URL}/auth/active-account-candidate?token=${token.createToken(result, String(60 * 60 * 1000))}
             `,
-            linkContent: `
+              linkContent: `
             Activate Your Account NOW!!!
             `
-            ,
-            senderName: "Ngụy Phú Quý"
-          });
-          this.mailService.sendMail(body.email, "[RIKKEI EDUCATION] Account Activation Email",
-            emailContent
-          )
-        } else {
-          const emailContent = await ejs.renderFile(path.join(__dirname, '../../../templates/send-mail.ejs'), {
-            // Truyền các dữ liệu cần thiết cho file EJS nếu có
-            title: "Account Activation",
-            dear: `Dear ${body.email
-              }, `,
-            content:
-              `Thank you for creating an account with us. To activate your account and start using our services, please click on the following
+              ,
+              senderName: "Ngụy Phú Quý"
+            });
+            this.mailService.sendMail(body.email, "[RIKKEI EDUCATION] Account Activation Email",
+              emailContent
+            )
+          } else {
+            const emailContent = await ejs.renderFile(path.join(__dirname, '../../../templates/send-mail.ejs'), {
+              // Truyền các dữ liệu cần thiết cho file EJS nếu có
+              title: "Account Activation",
+              dear: `Dear ${body.email
+                }, `,
+              content:
+                `Thank you for creating an account with us. To activate your account and start using our services, please click on the following
             `,
-            linkTitle: `Click here to activate your account:`
-            ,
-            linkURL: `
+              linkTitle: `Click here to activate your account:`
+              ,
+              linkURL: `
             ${process.env.API_URL}/company/active-account-company?token=${token.createToken(result, String(60 * 60 * 1000))}
             `,
-            linkContent: `
+              linkContent: `
             Activate Your Account NOW!!!
             `
-            ,
-            senderName: "Ngụy Phú Quý"
-          });
-          this.mailService.sendMail(body.email, "[RIKKEI EDUCATION] Account Activation Email",
-            emailContent
-          )
+              ,
+              senderName: "Ngụy Phú Quý"
+            });
+            this.mailService.sendMail(body.email, "[RIKKEI EDUCATION] Account Activation Email",
+              emailContent
+            )
+          }
+          await this.redisService.redisClient.set(`lastEmailSentAt:${body.email}`, now);
+          await this.redisService.redisClient.expire(`lastEmailSentAt:${body.email}`, 60);
+          throw new HttpException(this.i18n.t('err-message.errors.NoActiveNotice', { lang: I18nContext.current().lang }), HttpStatus.NOT_ACCEPTABLE, { cause: 'No Active' })
         }
-        throw new HttpException(this.i18n.t('err-message.errors.NoActiveNotice', { lang: I18nContext.current().lang }), HttpStatus.NOT_ACCEPTABLE, { cause: 'No Active' })
+
+
       }
       if (!(await SecureUtils.comparePasswords(body.password, result.password))) {
         throw new HttpException(this.i18n.t('err-message.errors.passwordIncorret', { lang: I18nContext.current().lang }), HttpStatus.UNAUTHORIZED, { cause: 'Unauthorized' })
@@ -218,7 +227,7 @@ export class AuthController {
     }
   }
 
-  @Get('/logout')
+  @Post('/logout')
   async logout(@Req() req: RequestToken, @Body() body: { refreshToken: string }, @Res() res: Response) {
     try {
       const token_key = `bl_${req.header('Authorization')?.replace('Bearer ', '')}`;

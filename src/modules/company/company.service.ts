@@ -84,7 +84,7 @@ export class CompanyService {
             let newAddress = new Address_Company();
             newAddress.address = createData.address;
             newAddress.company_id = id;
-            createData.map_url && (newAddress.map_url = createData.map_url);
+            createData.map_url ? (newAddress.map_url = createData.map_url) : (newAddress.map_url = "updating");
             let location = new Location();
             location.name = createData.name;
             await this.locationRepository.save(location);
@@ -207,6 +207,26 @@ export class CompanyService {
 
     }
 
+    async findTypeCompany() {
+        try {
+            let company = await this.typeCompanyRepository.find({})
+
+            if (!company) {
+                throw new HttpException(this.i18n.t('err-message.errors.NotFound', { lang: I18nContext.current().lang }), HttpStatus.NOT_FOUND, { cause: "Not Found" })
+            }
+            return company;
+
+        } catch (error) {
+            if (error instanceof HttpException) {
+                throw error
+            } else {
+                throw new HttpException(this.i18n.t('err-message.errors.databaseConnectFailed', { lang: I18nContext.current().lang }), HttpStatus.BAD_GATEWAY, { cause: "Bad Gateway" })
+            }
+
+        }
+
+    }
+
     async getSearch(page: number, pageSize: number, keyword: string, address: string) {
         try {
             let skip = 0;
@@ -242,12 +262,24 @@ export class CompanyService {
     async update(id: number, updateData: any) {
         try {
             await this.companyRepository.update(id, { ...updateData, updated_at: new Date(), status: updateData.status == 'inactive' ? Status.inactive : Status.active });
-            const updatedItem = await this.companyRepository.findOneBy({ id });
-            return updatedItem;
+            const updatedItem = await this.companyRepository.find({
+                where: { id },
+                relations: ['address_companies', 'type_company']
+            })
+            return updatedItem[0];
         } catch (error) {
             if (error instanceof HttpException) {
                 throw error; // Re-throw the existing HttpException
             } else {
+                console.log(error)
+                if (error.code === 'ER_DUP_ENTRY') {
+                    if (error.sqlMessage.includes(String(updateData.name))) {
+                        throw new HttpException(this.i18n.t('err-message.errors.conflict.name', { lang: I18nContext.current().lang }), HttpStatus.CONFLICT, { cause: "Conflict" });
+                    }
+                    if (error.sqlMessage.includes(String(updateData.email))) {
+                        throw new HttpException(this.i18n.t('err-message.errors.conflict.name', { lang: I18nContext.current().lang }), HttpStatus.CONFLICT, { cause: "Conflict" });
+                    }
+                }
                 throw new HttpException(this.i18n.t('err-message.errors.databaseConnectFailed', { lang: I18nContext.current().lang }), HttpStatus.BAD_GATEWAY, { cause: "Bad Gateway" });
             }
         }
@@ -257,15 +289,18 @@ export class CompanyService {
         try {
             let updatedItem: any;
             if (updateData.address || updateData.map_url) {
-                await this.addressCompanyRepository.update(id, { ...updateData, updated_at: new Date() });
+                let updateAddressData: any = {};
+                updateData.address && (updateAddressData.address = updateData.address)
+                updateData.map_url && (updateAddressData.map_url = updateData.map_url)
+                await this.addressCompanyRepository.update(id, { ...updateAddressData, updated_at: new Date() });
                 updatedItem = await this.addressCompanyRepository.findOneBy({ id });
             }
             if (updateData.name) {
-                await this.locationRepository.update(id, { ...updateData, updated_at: new Date() });
-                updatedItem = await this.locationRepository.findOneBy({ id });
+                await this.locationRepository.update(id, { name: updateData.name, updated_at: new Date() });
             }
             return updatedItem;
         } catch (error) {
+            console.log(error)
             if (error instanceof HttpException) {
                 throw error; // Re-throw the existing HttpException
             } else {

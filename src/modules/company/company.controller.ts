@@ -112,6 +112,7 @@ export class CompanyController {
   @Patch('/update-company/:companyId')
   async updateCompany(@Req() req: RequestToken, @Body() body: UpdateCompanyDTO, @Res() res: Response) {
     try {
+      console.log(req.tokenData.companies.find(item => item.id == Number(req.params.companyId)))
       if (req.tokenData.companies.find(item => item.id == Number(req.params.companyId))) {
         let result = await this.companyService.update(Number(req.params.companyId),
           {
@@ -134,7 +135,7 @@ export class CompanyController {
   @Patch('/update-address')
   async updateAddress(@Req() req: RequestToken, @Body() body: UpdateAddressDTO, @Res() res: Response) {
     try {
-      if (req.tokenData.companies.find(item => item.id == Number(req.params.companyId)).address_companies.find(item => item.id == Number(req.query.addressId))) {
+      if (req.tokenData.companies.find(item => item.id == Number(req.query.companyId)).address_companies.find(item => item.id == Number(req.query.addressId))) {
         let result = await this.companyService.updateAddress(Number(req.query.addressId), body)
         if (result) {
           return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.company.updateCompanyOK', { lang: I18nContext.current().lang }), data: result })
@@ -184,6 +185,20 @@ export class CompanyController {
     try {
       let result = await this.companyService.getAddress()
       return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.company.getAddressOK', { lang: I18nContext.current().lang }), data: result })
+    } catch (err) {
+      console.log(err)
+      if (err instanceof HttpException) {
+        return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
+      }
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
+    }
+  }
+
+  @Get('/get-type-company')
+  async getTypeCompany(@Req() req: Request, @Res() res: Response) {
+    try {
+      let result = await this.companyService.findTypeCompany()
+      return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.company.getTypeCompanyOK', { lang: I18nContext.current().lang }), data: result })
     } catch (err) {
       console.log(err)
       if (err instanceof HttpException) {

@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsString, IsEmail, IsOptional } from "class-validator";
+import { IsNotEmpty, IsString, IsEmail, IsOptional, IsNumber } from "class-validator";
 
 export class CreateCompanyDTO {
 
@@ -47,7 +47,7 @@ export class CreateCompanyDTO {
         example: '1000',
         required: false,
     })
-    @IsNotEmpty({ message: 'validation.COMMON_ERROR' })
+    @IsNumber({}, { message: 'validation.COMMON_ERROR' })
     @IsOptional()
     follower?: number;
 
@@ -81,4 +81,7 @@ export class CreateCompanyDTO {
     @IsString({ message: 'validation.COMMON_ERROR' })
     @IsOptional()
     description: string;
+
+
+
 }
