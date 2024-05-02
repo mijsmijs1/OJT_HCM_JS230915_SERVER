@@ -16,6 +16,8 @@
         "createCompany": "Create Company Successfull",
         "getCompanyOK": " Get Company Successfull",
         "getAddressOK": " Get Address Successfull",
+        "createAddressOK": " Create Address Successfull",
+        "deleteAddressOK": " Delete Address Successfull",
         "updateCompanyOK": " Update Company Successfull",
         "getTypeCompanyOK": " Get All Type of Company Successfull"
     },

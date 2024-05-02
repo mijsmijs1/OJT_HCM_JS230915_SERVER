@@ -31,7 +31,8 @@ export class CompanyModule implements NestModule {
         { path: "company/update-company/:companyId", method: RequestMethod.PATCH, version: '1' },
         { path: "company/update-address", method: RequestMethod.PATCH, version: '1' },
         { path: "company/active-account-company", method: RequestMethod.GET, version: '1' },
-        { path: "company/get-all", method: RequestMethod.GET, version: '1' }
+        { path: "company/get-all", method: RequestMethod.GET, version: '1' },
+        { path: "company/delete-address", method: RequestMethod.DELETE, version: '1' }
       )
   }
 }

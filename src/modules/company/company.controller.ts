@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Patch, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Patch, Post, Req, Res } from '@nestjs/common';
 import { CompanyService } from './company.service';
 import { RegisterCompanyDTO } from './dtos/register-company.dto';
 import { Request, Response } from 'express';
@@ -92,12 +92,12 @@ export class CompanyController {
   async createAddress(@Req() req: RequestToken, @Body() body: CreateAddressDTO, @Res() res: Response) {
     try {
       if (req.tokenData.companies.find(item => item.id == Number(req.params.companyId))) {
-        await this.companyService.createAddress(Number(req.params.companyId), {
+        let newAddress = await this.companyService.createAddress(Number(req.params.companyId), {
           ...body,
           account_company_id: req.tokenData.id
         })
         // let message = await i18n.t('success-message.auth.registerOk')
-        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.company.createCompany', { lang: I18nContext.current().lang }) })
+        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.company.createAddressOK', { lang: I18nContext.current().lang }), data: newAddress })
       }
       throw new HttpException(this.i18n.t('err-message.errors.NotFound', { lang: I18nContext.current().lang }), HttpStatus.NOT_FOUND, { cause: "Not Found" })
     } catch (error) {
@@ -234,4 +234,22 @@ export class CompanyController {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
     }
   }
+
+  @Delete('/delete-address')
+  async deleteAddress(@Req() req: RequestToken, @Res() res: Response) {
+    try {
+      if (req.tokenData.companies.find(item => item.id == Number(req.query.companyId)).address_companies.find(item => item.id == Number(req.query.addressId))) {
+        await this.companyService.deleteAddress(Number(req.query.addressId))
+        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.company.deleteAddressOK', { lang: I18nContext.current().lang }) })
+      }
+      throw new HttpException(this.i18n.t('err-message.errors.NotFound', { lang: I18nContext.current().lang }), HttpStatus.NOT_FOUND, { cause: "Not Found" })
+    } catch (err) {
+      console.log(err)
+      if (err instanceof HttpException) {
+        return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
+      }
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
+    }
+  }
+
 }
