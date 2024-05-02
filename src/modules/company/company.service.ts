@@ -101,6 +101,21 @@ export class CompanyService {
         }
     }
 
+    async deleteAddress(addressId: number) {
+        try {
+            await this.addressCompanyRepository.delete({ id: addressId })
+            return true;
+        } catch (error) {
+            if (error instanceof HttpException) {
+                throw error
+            } else {
+                throw new HttpException(this.i18n.t('err-message.errors.databaseConnectFailed', { lang: I18nContext.current().lang }), HttpStatus.BAD_GATEWAY, { cause: "Bad Gateway" })
+            }
+
+        }
+
+    }
+
     async findCompanyByIdFromAccountId(accountId: number, comppanyId: number) {
         try {
 
