@@ -52,6 +52,8 @@ export class CompanyService {
             let newCompany = new Company();
             newCompany.name = createData.name;
             createData.website && (newCompany.website = createData.website);
+            createData.logo && (newCompany.logo = createData.logo);
+            createData.type_company_id && (newCompany.type_company_id = createData.type_company_id);
             createData.link_fb && (newCompany.link_fb = createData.link_fb);
             createData.link_linkedin && (newCompany.link_linkedin = createData.link_linkedin);
             newCompany.email = createData.email;
@@ -61,7 +63,11 @@ export class CompanyService {
             let type_company = new Type_Company();
             await this.typeCompanyRepository.save(type_company);
             await this.companyRepository.save(newCompany)
-            return newCompany
+            let company = await this.companyRepository.findOne({
+                where: { id: newCompany.id },
+                relations: ['type_company'] // Thêm các quan hệ mà bạn muốn load
+            });
+            return company
         } catch (error) {
             console.log(error)
             if (error.code === '23505') { // Lỗi mã lỗi Postgres khi trường unique bị vi phạm
