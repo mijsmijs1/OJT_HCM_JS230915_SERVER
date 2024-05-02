@@ -60,6 +60,13 @@ export class CreateCompanyDTO {
     size?: number;
 
     @ApiProperty({
+        example: '1',
+        required: false,
+    })
+    @IsOptional()
+    type_company_id?: number;
+
+    @ApiProperty({
         example: 'company@example.com',
         required: true,
     })
@@ -81,7 +88,5 @@ export class CreateCompanyDTO {
     @IsString({ message: 'validation.COMMON_ERROR' })
     @IsOptional()
     description: string;
-
-
 
 }
