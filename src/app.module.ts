@@ -1,6 +1,6 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { UserModule } from './modules/user/user.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
 import config from 'ormconfig';
 import { MulterModule } from '@nestjs/platform-express';
 import { CompanyModule } from './modules/company/company.module';
@@ -21,12 +21,21 @@ import { SkillsCandidate } from './modules/candidate/database/skill_candidate.en
 import { Account_Company } from './modules/company/database/account_company.entity';
 import { Company } from './modules/company/database/company.entity';
 import { Jobs_Candidates } from './modules/job/database/jobs_candidates.entity';
+import { DefaultEntriesService } from './shared/seeds/seed';
+import { TypeJob } from './modules/job/database/typeJob.entity';
+import { Repository } from 'typeorm';
+import { LevelJob } from './modules/job/database/levelJob.entity';
+import { Type_Company } from './modules/company/database/type_company.entity';
 
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Candidate, CertificateCandidate, EducationCandidate, ExperienceCandidate, ProjectCandidate, SkillsCandidate, Account_Company, Company, Jobs_Candidates]),
-    TypeOrmModule.forRoot(config),
+    TypeOrmModule.forRootAsync({
+      useFactory: async () => ({
+        ...config
+      })
+    }),
+    TypeOrmModule.forFeature([Candidate, CertificateCandidate, EducationCandidate, ExperienceCandidate, ProjectCandidate, SkillsCandidate, Account_Company, Company, Jobs_Candidates, TypeJob, LevelJob, Type_Company]),
     MulterModule.register({
       dest: './uploads', // Đường dẫn tới thư mục lưu trữ file tải lên
     }),
@@ -49,6 +58,19 @@ import { Jobs_Candidates } from './modules/job/database/jobs_candidates.entity';
     AuthModule,
   ],
   controllers: [],
-  providers: [RedisService, MailService, AuthService],
+  providers: [RedisService, MailService, AuthService, DefaultEntriesService],
 })
-export class AppModule { }
+export class AppModule implements OnModuleInit {
+  constructor(
+    private readonly defaultEntriesService: DefaultEntriesService,
+  ) { }
+  async onModuleInit() {
+    try {
+      await this.defaultEntriesService.createDefaultTypeJob();
+      await this.defaultEntriesService.createDefaultLevelJob();
+      await this.defaultEntriesService.createDefaultTypeCompany();
+    } catch (err) {
+      console.log(err)
+    }
+  }
+}
