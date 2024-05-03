@@ -213,9 +213,9 @@ export class AuthController {
         let newCandidate = await this.authService.findById(req.tokenData.id, 'candidate')
         console.log(newCandidate)
         if (newCandidate) {
-          const token_key = `bl_${req.header('Authorization')?.replace('Bearer ', '')}`;
-          await this.redisService.redisClient.set(token_key, req.header('Authorization')?.replace('Bearer ', ''));
-          this.redisService.redisClient.expireAt(token_key, Number(req.tokenData.exp));
+          // const token_key = `bl_${req.header('Authorization')?.replace('Bearer ', '')}`;
+          // await this.redisService.redisClient.set(token_key, req.header('Authorization')?.replace('Bearer ', ''));
+          // this.redisService.redisClient.expireAt(token_key, Number(req.tokenData.exp));
           return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.auth.updateAccountOK', { lang: I18nContext.current().lang }), data: { ...body, updated_at: newCandidate.updated_at }, accessToken: token.createToken(newCandidate), refreshToken: token.createRefreshToken(newCandidate) })
         }
       }

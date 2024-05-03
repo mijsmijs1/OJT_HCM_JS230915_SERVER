@@ -11,6 +11,7 @@
         "TokenInvalid": "Token Invalid!",
         "TokenExpired": "Token expired",
         "NotFound": "Not Found Data!",
+        "NotAdmin": "Your Are Not Admin!",
         "oldPasswordInvalid": "Your Old Password is wrong!",
         "PermissionInvalid": "Permission Invalid!",
         "duplicateCompanyName": "The company has existed with the name.",
