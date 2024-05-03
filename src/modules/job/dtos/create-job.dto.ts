@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsNotEmpty, IsString, IsOptional, IsNumber } from "class-validator";
+import { IsNotEmpty, IsString, IsOptional, IsNumber, MaxLength } from "class-validator";
 
 export class CreateJobDto {
     @ApiProperty({
@@ -17,6 +17,7 @@ export class CreateJobDto {
     })
     @IsString({ message: 'validation.COMMON_ERROR' })
     @IsNotEmpty({ message: 'validation.COMMON_ERROR' })
+    @MaxLength(2000, { message: 'validation.COMMON_ERROR' })
     description: string;
 
     @ApiProperty({

@@ -6,6 +6,7 @@ import { I18nContext, I18nService } from 'nestjs-i18n';
 import { TypeJob } from './database/typeJob.entity';
 import { Location } from '../company/database/location.entity';
 import { Status } from 'src/constant/enum';
+import { LevelJob } from './database/levelJob.entity';
 
 @Injectable()
 export class JobService {
@@ -14,6 +15,8 @@ export class JobService {
         private readonly jobRepository: Repository<Job>,
         @InjectRepository(TypeJob)
         private readonly typeJobRepository: Repository<TypeJob>,
+        @InjectRepository(LevelJob)
+        private readonly levelJobRepository: Repository<LevelJob>,
         @InjectRepository(Location)
         private readonly locationRepository: Repository<Location>,
         private readonly i18n: I18nService
@@ -35,7 +38,6 @@ export class JobService {
             newJob.location_id = location.id
             newJob.levelJob_id = createData.levelJob_id
             const typeJobs = await this.typeJobRepository.findBy({ id: In(createData.typeJobs) })
-
             newJob.typeJobs = typeJobs
             // const newJob = await this.jobRepository.create({ ...createDate })
             await this.jobRepository.save(newJob)
@@ -77,6 +79,27 @@ export class JobService {
     async gettypeJob() {
         try {
             let typeJob = await this.typeJobRepository.find();
+
+            if (!typeJob) {
+                throw new HttpException(this.i18n.t('err-message.errors.NotFound', { lang: I18nContext.current().lang }), HttpStatus.NOT_FOUND, { cause: "Not Found" })
+            }
+            return typeJob;
+
+        } catch (error) {
+            console.log(error)
+            if (error instanceof HttpException) {
+                throw error
+            } else {
+                throw new HttpException(this.i18n.t('err-message.errors.databaseConnectFailed', { lang: I18nContext.current().lang }), HttpStatus.BAD_GATEWAY, { cause: "Bad Gateway" })
+            }
+
+        }
+
+    }
+
+    async getLevelJob() {
+        try {
+            let typeJob = await this.levelJobRepository.find();
 
             if (!typeJob) {
                 throw new HttpException(this.i18n.t('err-message.errors.NotFound', { lang: I18nContext.current().lang }), HttpStatus.NOT_FOUND, { cause: "Not Found" })

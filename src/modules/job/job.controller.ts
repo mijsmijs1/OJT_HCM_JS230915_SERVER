@@ -16,11 +16,11 @@ export class JobController {
   async createJob(@Req() req: RequestToken, @Body() body: CreateJobDto, @Res() res: Response) {
     try {
       if (req.tokenData.companies.find(item => item.id == Number(body.company_id))) {
-        await this.jobService.create(Number(body.company_id), {
+        let newJob = await this.jobService.create(Number(body.company_id), {
           ...body,
         })
         // let message = await i18n.t('success-message.auth.registerOk')
-        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.job.createJob', { lang: I18nContext.current().lang }) })
+        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.job.createJob', { lang: I18nContext.current().lang }), data: newJob })
       }
       throw new HttpException(this.i18n.t('err-message.errors.NotFound', { lang: I18nContext.current().lang }), HttpStatus.NOT_FOUND, { cause: "Not Found" })
     } catch (error) {
@@ -76,10 +76,24 @@ export class JobController {
   }
 
   @Get('/type-job')
-  async getTypeJob(@Req() req: RequestToken, @Res() res: Response) {
+  async getTypeJob(@Res() res: Response) {
     try {
       let result = await this.jobService.gettypeJob()
       return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.job.getTypeJobOK', { lang: I18nContext.current().lang }), data: result })
+    } catch (err) {
+      console.log(err)
+      if (err instanceof HttpException) {
+        return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
+      }
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
+    }
+  }
+
+  @Get('/level-job')
+  async getLevelJob(@Res() res: Response) {
+    try {
+      let result = await this.jobService.getLevelJob()
+      return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.job.getLevelJobOK', { lang: I18nContext.current().lang }), data: result })
     } catch (err) {
       console.log(err)
       if (err instanceof HttpException) {

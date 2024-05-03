@@ -179,7 +179,19 @@ export class CompanyController {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
     }
   }
-
+  @Get('/get-address-by-id/:companyId')
+  async GetAdressByID(@Req() req: RequestToken, @Res() res: Response) {
+    try {
+      let result = await this.companyService.getAddressById(Number(req.params.companyId))
+      return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.company.getAddressOK', { lang: I18nContext.current().lang }), data: result })
+    } catch (err) {
+      console.log(err)
+      if (err instanceof HttpException) {
+        return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
+      }
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
+    }
+  }
   @Get('/address')
   async GetAdress(@Req() req: RequestToken, @Res() res: Response) {
     try {

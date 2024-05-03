@@ -37,6 +37,7 @@
         "createJob": "Create Job Successfull",
         "getJobOK": " Get Job Successfull",
         "getTypeJobOK": " Get Type of Job Successfull",
+        "getLevelJobOK": " Get Level of Job Successfull",
         "updateJobOK": " Update Job Successfull"
     }
 }
