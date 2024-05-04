@@ -24,7 +24,8 @@ export class JobModule implements NestModule {
       .apply(AuthenticateJWTMiddleware)
       .forRoutes(
         { path: "job/create-job", method: RequestMethod.POST, version: '1' },
-        { path: "job/update-job/:jobId", method: RequestMethod.PATCH, version: '1' }
+        { path: "job/update-job/:jobId", method: RequestMethod.PATCH, version: '1' },
+        { path: "job/check-job/:jobId", method: RequestMethod.GET, version: '1' }
       )
   }
 }
