@@ -75,7 +75,36 @@ export class JobService {
         }
 
     }
+    async getJobByCompanyId(companyId: number, page: number, limit: number = 5) {
+        try {
+            const job = await this.jobRepository.createQueryBuilder("job")
+                .leftJoinAndSelect("job.location", "location")
+                .leftJoinAndSelect("job.levelJob", "levelJob")
+                .where("job.company_id = :companyId", { companyId })
+                .andWhere("job.status = :status", { status: Status.active })
+                .select(['job.id', 'job.created_at', 'job.expire_at', 'job.title', 'job.salary', 'location', 'levelJob'])
+                .skip((page - 1) * limit)
+                .take(limit)
+                .getMany();
+            const count = await this.jobRepository.count({
+                where: { company_id: companyId },
+            });
+            if (!job.length) {
+                throw new HttpException(this.i18n.t('err-message.errors.NotFound', { lang: I18nContext.current().lang }), HttpStatus.NOT_FOUND, { cause: "Not Found" })
+            }
+            return { job, count };
 
+        } catch (error) {
+            console.log(error)
+            if (error instanceof HttpException) {
+                throw error
+            } else {
+                throw new HttpException(this.i18n.t('err-message.errors.databaseConnectFailed', { lang: I18nContext.current().lang }), HttpStatus.BAD_GATEWAY, { cause: "Bad Gateway" })
+            }
+
+        }
+
+    }
     async gettypeJob() {
         try {
             let typeJob = await this.typeJobRepository.find();
@@ -120,10 +149,12 @@ export class JobService {
 
     async update(id: number, updateData: any) {
         try {
+            console.log(updateData)
             let typeJobs = []
             let job = await this.jobRepository.findOneBy({ id })
             if (updateData.typeJobs) {
                 typeJobs = await this.typeJobRepository.findBy({ id: In(updateData.typeJobs) })
+                console.log('typeJobs tertere', typeJobs)
                 job.typeJobs = typeJobs
                 delete updateData.typeJobs
             }
@@ -134,9 +165,13 @@ export class JobService {
                 delete updateData.location_name
                 updateData.location_id = location.id;
             }
+            await this.jobRepository.save(job)
             await this.jobRepository.update(id, { ...updateData, updated_at: new Date(), status: updateData.status == 'inactive' ? Status.inactive : Status.active });
-            const updatedItem = await this.jobRepository.findOneBy({ id });
-            return updatedItem;
+            const updatedItem = await this.jobRepository.find({
+                where: { id: id },
+                relations: ['typeJobs', 'location', 'levelJob'] // Thêm các quan hệ mà bạn muốn load
+            });;
+            return updatedItem[0];
         } catch (error) {
             console.log(error)
             if (error instanceof HttpException) {

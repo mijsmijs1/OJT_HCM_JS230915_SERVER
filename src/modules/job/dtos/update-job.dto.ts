@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsNotEmpty, IsString, IsOptional, IsNumber } from "class-validator";
+import { IsNotEmpty, IsString, IsOptional, IsNumber, IsIn } from "class-validator";
 
 export class UpdateJobDto {
     @ApiProperty({
@@ -83,4 +83,11 @@ export class UpdateJobDto {
     @IsOptional()
     levelJob_id: number;
 
+    @ApiProperty({
+        example: 'active',
+        required: true,
+    })
+    @IsIn(['active', 'inactive'], { message: 'validation.COMMON_ERROR' })
+    @IsOptional()
+    status: string;
 }

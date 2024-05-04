@@ -102,9 +102,47 @@ export class JobController {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
     }
   }
+  @Get('/check-job/:jobId')
+  async CheckCompany(@Req() req: RequestToken, @Res() res: Response) {
+    try {
+      let check = false;
+      for (let item of req.tokenData.companies) {
+        for (let job of item.jobs) {
+          if (job.id == Number(req.params.jobId)) {
+            check = true;
+          }
+        }
+      }
+      if (check) {
+        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.company.checkOk', { lang: I18nContext.current().lang }), data: true })
+      } else {
+        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.company.checkOk', { lang: I18nContext.current().lang }), data: false })
+      }
+    } catch (err) {
+      console.log(err)
+      if (err instanceof HttpException) {
+        return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
+      }
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
+    }
+  }
 
+
+  @Get('/get-job-by-companyId/:companyId/info')
+  async getJobByCompanyId(@Req() req: RequestToken, @Res() res: Response) {
+    try {
+      let result = await this.jobService.getJobByCompanyId(Number(req.params.companyId), Number(req.query.page))
+      return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.job.getJobOK', { lang: I18nContext.current().lang }), data: result })
+    } catch (err) {
+      console.log(err)
+      if (err instanceof HttpException) {
+        return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
+      }
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
+    }
+  }
   @Get('/:jobId')
-  async getOneCompany(@Req() req: RequestToken, @Res() res: Response) {
+  async getOneJob(@Req() req: RequestToken, @Res() res: Response) {
     try {
       let result = await this.jobService.getById(Number(req.params.jobId))
       return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.job.getJobOK', { lang: I18nContext.current().lang }), data: result })
@@ -116,5 +154,4 @@ export class JobController {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
     }
   }
-
 }
