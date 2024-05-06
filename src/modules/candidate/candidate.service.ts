@@ -345,4 +345,17 @@ export class CandidateService {
         }
 
     }
+
+    async deleteEducation(id: number) {
+        try {
+            await this.educationCandidateRepository.delete(id);
+            return true;
+        } catch (error) {
+            if (error instanceof HttpException) {
+                throw error; // Re-throw the existing HttpException
+            } else {
+                throw new HttpException(this.i18n.t('err-message.errors.databaseConnectFailed', { lang: I18nContext.current().lang }), HttpStatus.BAD_GATEWAY, { cause: "Bad Gateway" });
+            }
+        }
+    }
 }

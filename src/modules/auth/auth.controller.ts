@@ -230,6 +230,7 @@ export class AuthController {
   @Post('/logout')
   async logout(@Req() req: RequestToken, @Body() body: { refreshToken: string }, @Res() res: Response) {
     try {
+      console.log(req.tokenData)
       const token_key = `bl_${req.header('Authorization')?.replace('Bearer ', '')}`;
       await this.redisService.redisClient.set(token_key, req.header('Authorization')?.replace('Bearer ', ''));
       this.redisService.redisClient.expireAt(token_key, Number(req.tokenData.exp));
@@ -241,6 +242,7 @@ export class AuthController {
       this.redisService.redisClient.expireAt(refresh_token, Number((refreshTokenData as any).exp));
       return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.auth.LogoutOk', { lang: I18nContext.current().lang }) })
     } catch (err) {
+      console.log(err)
       if (err instanceof HttpException) {
         return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
       }

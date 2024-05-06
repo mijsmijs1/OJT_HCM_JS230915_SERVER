@@ -42,6 +42,7 @@ export class CandidateModule implements NestModule {
         { path: "candidate/education", method: RequestMethod.GET, version: '1' },
         { path: "candidate/experience", method: RequestMethod.GET, version: '1' },
         { path: "candidate/project", method: RequestMethod.GET, version: '1' },
+        { path: "candidate/delete-education/:id", method: RequestMethod.DELETE, version: '1' },
       )
   }
 }

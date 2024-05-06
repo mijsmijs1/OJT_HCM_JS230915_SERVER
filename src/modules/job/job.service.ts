@@ -274,7 +274,7 @@ export class JobService {
         }
     }
 
-    async getSearch(page: number, pageSize: number, keyword: string, address: string, typeJobIdArray: number[]) {
+    async getSearch(page: number, pageSize: number, keyword: string, address: string, typeJobIdArray: number[], levelJobId: number, time: string) {
         try {
             let skip = 0;
             if (page > 1) {
@@ -284,29 +284,58 @@ export class JobService {
             let queryBuilder = await this.jobRepository
                 .createQueryBuilder("job")
                 .leftJoinAndSelect("job.location", "location")
-                .innerJoinAndSelect("job.typeJobs", "typeJob")
+                .leftJoinAndSelect("job.typeJobs", "typeJobs")
+                .leftJoinAndSelect("job.levelJob", "levelJob")
                 .andWhere("job.status = :status", { status: Status.active }) // Thêm điều kiện status active
+                .select(['job.id', 'job.created_at', 'job.updated_at', 'job.company_id', 'job.expire_at', 'job.title', 'job.salary', 'location', 'levelJob', 'typeJobs'])
                 .skip(skip)
                 .take(pageSize)
 
+            let countqueryBuilder = await this.jobRepository
+                .createQueryBuilder("job")
+                .leftJoin("job.location", "location")
+                .leftJoin("job.typeJobs", "typeJobs")
+                .leftJoin("job.levelJob", "levelJob")
+                .andWhere("job.status = :status", { status: Status.active }) // Thêm điều kiện status active
+                .select(['job.id'])
             if (keyword !== 'all') {
                 queryBuilder = queryBuilder.andWhere("LOWER(job.title) LIKE LOWER(:keyword)", { keyword: `%${keyword}%` });
+                countqueryBuilder = countqueryBuilder.andWhere("LOWER(job.title) LIKE LOWER(:keyword)", { keyword: `%${keyword}%` });
             }
-
             if (address !== 'all') {
                 queryBuilder = queryBuilder.andWhere("LOWER(location.name) LIKE LOWER(:address)", { address: `%${address}%` });
+                countqueryBuilder = countqueryBuilder.andWhere("LOWER(location.name) LIKE LOWER(:address)", { address: `%${address}%` });
             }
-            if (typeJobIdArray && typeJobIdArray.length > 0) {
-
-                queryBuilder = queryBuilder.andWhere("typeJob.id IN (:...typeJobIds)", { typeJobIds: typeJobIdArray });
+            if (typeJobIdArray && typeJobIdArray.length > 0 && typeJobIdArray[0] != 0) {
+                queryBuilder = queryBuilder.andWhere("typeJobs.id IN (:...typeJobIds)", { typeJobIds: typeJobIdArray });
+                countqueryBuilder = countqueryBuilder.andWhere("typeJobs.id IN (:...typeJobIds)", { typeJobIds: typeJobIdArray });
+            }
+            if (levelJobId != 0) {
+                queryBuilder = queryBuilder.andWhere("levelJob.id = :levelJobId", { levelJobId: levelJobId });
+                countqueryBuilder = countqueryBuilder.andWhere("levelJob.id = :levelJobId", { levelJobId: levelJobId });
+            }
+            if (time == 'created_at') {
+                queryBuilder = queryBuilder.orderBy("job.created_at", "DESC")
+                countqueryBuilder = countqueryBuilder.orderBy("job.created_at", "DESC")
+            }
+            if (time == 'updated_at') {
+                queryBuilder = queryBuilder.orderBy("job.updated_at", "DESC")
+                countqueryBuilder = countqueryBuilder.orderBy("job.updated_at", "DESC")
             }
             let jobs = await queryBuilder.getMany();
-
+            let jobCount = await countqueryBuilder.getMany();
             if (!jobs || jobs.length === 0) {
                 throw new HttpException(this.i18n.t('err-message.errors.NotFound', { lang: I18nContext.current().lang }), HttpStatus.NOT_FOUND, { cause: "Not Found" });
             }
-
-            return jobs;
+            for (let item of jobs) {
+                const company = await this.companyRepository.findOne({
+                    where: { id: item.company_id },
+                    relations: ['type_company'],
+                    select: ['id', 'logo', 'name'] // Thêm các quan hệ mà bạn muốn load
+                });
+                item.company = company;
+            }
+            return { jobs, count: jobCount.length };
         } catch (error) {
             console.log(error);
             if (error instanceof HttpException) {

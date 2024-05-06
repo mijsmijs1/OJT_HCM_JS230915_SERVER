@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Patch, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Patch, Post, Req, Res } from '@nestjs/common';
 import { CandidateService } from './candidate.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { I18nContext, I18nService } from 'nestjs-i18n';
@@ -299,4 +299,23 @@ export class CandidateController {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
     }
   }
+  @Delete('/delete-education/:id')
+  async deleteEducation(@Req() req: RequestToken, @Res() res: Response) {
+    try {
+      if (req.tokenData.education.find(item => item.id == Number(req.params.id))) {
+        let result = await this.candidateService.deleteEducation(Number(req.params.id))
+        if (result) {
+          return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.candidate.deleteEducation', { lang: I18nContext.current().lang }) })
+        }
+      }
+      throw new HttpException(this.i18n.t('err-message.errors.NotFound', { lang: I18nContext.current().lang }), HttpStatus.NOT_FOUND, { cause: "Not Found" })
+    }
+    catch (err) {
+      if (err instanceof HttpException) {
+        return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
+      }
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
+    }
+  }
+
 }
