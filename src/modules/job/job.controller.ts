@@ -2,7 +2,7 @@ import { Body, Controller, Get, HttpException, HttpStatus, Patch, Post, Req, Res
 import { JobService } from './job.service';
 import { RequestToken } from 'src/shared/middleware/authen-jwr.middleware';
 import { I18nContext, I18nService } from 'nestjs-i18n';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { CreateJobDto } from './dtos/create-job.dto';
 import { UpdateJobDto } from './dtos/update-job.dto';
 
@@ -132,6 +132,32 @@ export class JobController {
   async getJobByCompanyId(@Req() req: RequestToken, @Res() res: Response) {
     try {
       let result = await this.jobService.getJobByCompanyId(Number(req.params.companyId), Number(req.query.page))
+      return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.job.getJobOK', { lang: I18nContext.current().lang }), data: result })
+    } catch (err) {
+      console.log(err)
+      if (err instanceof HttpException) {
+        return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
+      }
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
+    }
+  }
+  @Get('/get-job-by-type-job')
+  async getJobByTypeJob(@Req() req: Request, @Res() res: Response) {
+    try {
+      let result = await this.jobService.getJobByTypeJob(String(req.query.type_job_id).split(',').map(Number))
+      return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.job.getJobOK', { lang: I18nContext.current().lang }), data: result })
+    } catch (err) {
+      console.log(err)
+      if (err instanceof HttpException) {
+        return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
+      }
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
+    }
+  }
+  @Get('/get-job-home')
+  async getJobForHomePage(@Res() res: Response) {
+    try {
+      let result = await this.jobService.getForHomePage()
       return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.job.getJobOK', { lang: I18nContext.current().lang }), data: result })
     } catch (err) {
       console.log(err)

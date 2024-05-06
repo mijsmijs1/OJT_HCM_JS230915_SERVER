@@ -12,9 +12,10 @@ import { AuthenticateJWTMiddleware } from 'src/shared/middleware/authen-jwr.midd
 import { Account_Company } from '../company/database/account_company.entity';
 import { Location } from '../company/database/location.entity';
 import { Jobs_Candidates } from './database/jobs_candidates.entity';
+import { Company } from '../company/database/company.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Candidate, Job, LevelJob, TypeJob, Account_Company, Location, Jobs_Candidates])],
+  imports: [TypeOrmModule.forFeature([Candidate, Job, LevelJob, TypeJob, Account_Company, Location, Jobs_Candidates, Company])],
   controllers: [JobController],
   providers: [JobService, AuthService, RedisService]
 })

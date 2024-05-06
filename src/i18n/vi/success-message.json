@@ -4,19 +4,23 @@
         "loginOk": "Đăng nhập thành công",
         "LogoutOk": "Đăng xuất thành công",
         "refreshTokenOk": "Làm mới token mới thành công",
-        "sendEmailSuccess": "Gửi email thành công",
-        "sendActiveEmailSuccess": "Chúng tôi đã gửi email kích hoạt đến địa chỉ email vừa mới đăng kí của bạn, vui lòng kiểm tra email để hoàn tất đăng kí.",
-        "changePasswordOK": "Thay đổi mật khẩu thành công",
+        "sendEmailSuccess": "Gửi Email thành công",
+        "sendActiveEmailSuccess": "Chúng tôi đã gửi một email kích hoạt đến địa chỉ email mới đăng ký. Vui lòng kiểm tra email của bạn để hoàn tất quá trình đăng ký.",
+        "changePasswordOK": "Đổi mật khẩu thành công",
         "updateAccountOK": "Cập nhật tài khoản thành công",
         "deleteAccountOK": "Xóa tài khoản thành công",
         "decodeTokenOK": "Giải mã token thành công",
-        "findJobApplicationOk": "Tìm kiếm đơn xin việc thành công"
+        "findJobApplicationOk": "Tìm kiếm đơn ứng tuyển thành công"
     },
     "company": {
         "createCompany": "Tạo công ty thành công",
-        "getCompanyOK": "Lấy thông tin công ty thành công",
-        "getAddressOK": "Lấy địa chỉ thành công",
-        "updateCompanyOK": "Cập nhật thông tin công ty thành công"
+        "getCompanyOK": "Nhận thông tin công ty thành công",
+        "getAddressOK": "Nhận thông tin địa chỉ thành công",
+        "createAddressOK": "Tạo địa chỉ thành công",
+        "deleteAddressOK": "Xóa địa chỉ thành công",
+        "updateCompanyOK": "Cập nhật thông tin công ty thành công",
+        "getTypeCompanyOK": "Nhận tất cả loại công ty thành công",
+        "checkOk": "Đã kiểm tra!"
     },
     "candidate": {
         "createCertificate": "Tạo chứng chỉ thành công",
@@ -32,8 +36,9 @@
     },
     "job": {
         "createJob": "Tạo công việc thành công",
-        "getJobOK": "Lấy thông tin công việc thành công",
-        "getTypeJobOK": "Lấy thông tin loại công việc thành công",
-        "updateJobOK": "Cập nhật công việc thành công"
+        "getJobOK": "Nhận thông tin công việc thành công",
+        "getTypeJobOK": "Nhận tất cả loại công việc thành công",
+        "getLevelJobOK": "Nhận tất cả cấp độ công việc thành công",
+        "updateJobOK": "Cập nhật thông tin công việc thành công"
     }
 }

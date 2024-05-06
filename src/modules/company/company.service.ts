@@ -205,7 +205,32 @@ export class CompanyService {
         }
 
     }
+    async getCompanyByType(typeId: number) {
+        try {
+            let companies = await this.companyRepository.createQueryBuilder("company")
+                .leftJoinAndSelect("company.type_company", "type_company")
+                .leftJoinAndSelect("company.address_companies", "address_companies")
+                .leftJoinAndSelect("company.jobs", "job", "job.created_at <= CURRENT_TIMESTAMP AND job.expire_at >= CURRENT_TIMESTAMP AND job.status = :status", { status: Status.active })
+                .where("company.type_company_id = :typeId", { typeId: typeId })
+                .andWhere("company.status = :status", { status: Status.active })
+                .select(["company.id", "company.name", "company.logo", "type_company", "address_companies", "job.id"])
+                .take(6)
+                .getMany();
+            if (!companies) {
+                throw new HttpException(this.i18n.t('err-message.errors.NotFound', { lang: I18nContext.current().lang }), HttpStatus.NOT_FOUND, { cause: "Not Found" })
+            }
+            return companies;
 
+        } catch (error) {
+            if (error instanceof HttpException) {
+                throw error
+            } else {
+                throw new HttpException(this.i18n.t('err-message.errors.databaseConnectFailed', { lang: I18nContext.current().lang }), HttpStatus.BAD_GATEWAY, { cause: "Bad Gateway" })
+            }
+
+        }
+
+    }
     async getAddress() {
         try {
             let company = await this.addressCompanyRepository.find({
@@ -270,27 +295,43 @@ export class CompanyService {
     }
 
     async getSearch(page: number, pageSize: number, keyword: string, address: string) {
+        console.log(page, pageSize, keyword, address)
         try {
             let skip = 0;
             if (page > 1) {
                 skip = (page - 1) * pageSize;
             }
 
-            const companies = await this.companyRepository
+            const companiesQuery = this.companyRepository
                 .createQueryBuilder("company")
-                .leftJoinAndSelect("company.address_companies", "address_company")
-                .where("LOWER(company.name) LIKE LOWER(:keyword)", { keyword: `%${keyword}%` })
-                .andWhere("LOWER(address_company.address) LIKE LOWER(:address)", { address: `%${address}%` })
+                .leftJoinAndSelect("company.type_company", "type_company")
+                .leftJoinAndSelect("company.address_companies", "address_companies")
+                .leftJoinAndSelect("company.jobs", "job", "job.created_at <= CURRENT_TIMESTAMP AND job.expire_at >= CURRENT_TIMESTAMP AND job.status = :status", { status: Status.active })
                 .andWhere("company.status = :status", { status: Status.active }) // Thêm điều kiện status active
+                .select(["company.id", "company.name", "company.logo", "type_company", "address_companies", "job.id"])
                 .skip(skip)
                 .take(pageSize)
-                .getMany();
 
+            let companyCountQuery = this.companyRepository
+                .createQueryBuilder("company")
+                .leftJoinAndSelect("company.address_companies", "address_companies")
+                .andWhere("company.status = :status", { status: Status.active })
+                .select(["company.id"])
+
+            if (keyword !== 'all') {
+                companiesQuery.andWhere("LOWER(company.name) LIKE LOWER(:keyword)", { keyword: `%${keyword}%` });
+                companyCountQuery.andWhere("LOWER(company.name) LIKE LOWER(:keyword)", { keyword: `%${keyword}%` });
+            }
+            if (address !== 'all') {
+                companiesQuery.andWhere("LOWER(address_companies.address) LIKE LOWER(:address)", { address: `%${address}%` });
+                companyCountQuery.andWhere("LOWER(address_companies.address) LIKE LOWER(:address)", { address: `%${address}%` });
+            }
+            const companies = await companiesQuery.getMany();
+            const companyCount = await companyCountQuery.getMany();
             if (!companies || companies.length === 0) {
                 throw new HttpException(this.i18n.t('err-message.errors.NotFound', { lang: I18nContext.current().lang }), HttpStatus.NOT_FOUND, { cause: "Not Found" });
             }
-
-            return companies;
+            return { companies, count: companyCount.length };
         } catch (error) {
             console.log(error);
             if (error instanceof HttpException) {
