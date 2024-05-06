@@ -26,6 +26,11 @@ import { TypeJob } from './modules/job/database/typeJob.entity';
 import { Repository } from 'typeorm';
 import { LevelJob } from './modules/job/database/levelJob.entity';
 import { Type_Company } from './modules/company/database/type_company.entity';
+import { CompanyService } from './modules/company/company.service';
+import { Address_Company } from './modules/company/database/address_company.entity';
+import { Location } from './modules/company/database/location.entity';
+import { JobService } from './modules/job/job.service';
+import { Job } from './modules/job/database/job.entity';
 
 
 @Module({
@@ -35,7 +40,7 @@ import { Type_Company } from './modules/company/database/type_company.entity';
         ...config
       })
     }),
-    TypeOrmModule.forFeature([Candidate, CertificateCandidate, EducationCandidate, ExperienceCandidate, ProjectCandidate, SkillsCandidate, Account_Company, Company, Jobs_Candidates, TypeJob, LevelJob, Type_Company]),
+    TypeOrmModule.forFeature([Candidate, CertificateCandidate, EducationCandidate, ExperienceCandidate, ProjectCandidate, SkillsCandidate, Account_Company, Company, Jobs_Candidates, TypeJob, LevelJob, Type_Company, Address_Company, Location, Job]),
     MulterModule.register({
       dest: './uploads', // Đường dẫn tới thư mục lưu trữ file tải lên
     }),
@@ -58,7 +63,7 @@ import { Type_Company } from './modules/company/database/type_company.entity';
     AuthModule,
   ],
   controllers: [],
-  providers: [RedisService, MailService, AuthService, DefaultEntriesService],
+  providers: [RedisService, MailService, AuthService, DefaultEntriesService, CompanyService, JobService],
 })
 export class AppModule implements OnModuleInit {
   constructor(
@@ -69,6 +74,7 @@ export class AppModule implements OnModuleInit {
       await this.defaultEntriesService.createDefaultTypeJob();
       await this.defaultEntriesService.createDefaultLevelJob();
       await this.defaultEntriesService.createDefaultTypeCompany();
+      await this.defaultEntriesService.createDefaultCompanyAccount();
     } catch (err) {
       console.log(err)
     }

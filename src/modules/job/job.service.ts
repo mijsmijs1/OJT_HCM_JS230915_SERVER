@@ -7,10 +7,13 @@ import { TypeJob } from './database/typeJob.entity';
 import { Location } from '../company/database/location.entity';
 import { Status } from 'src/constant/enum';
 import { LevelJob } from './database/levelJob.entity';
+import { Company } from '../company/database/company.entity';
 
 @Injectable()
 export class JobService {
     constructor(
+        @InjectRepository(Company)
+        private readonly companyRepository: Repository<Company>,
         @InjectRepository(Job)
         private readonly jobRepository: Repository<Job>,
         @InjectRepository(TypeJob)
@@ -75,6 +78,57 @@ export class JobService {
         }
 
     }
+
+    async getJobByTypeJob(typeJobIdArray: number[]) {
+        try {
+            console.log(typeJobIdArray)
+            let jobs = [];
+            let typeJobIdArrayCopy = [...typeJobIdArray];
+            for (let i = 0; i < typeJobIdArray.length; i++) {
+                let newJobs = await this.jobRepository.createQueryBuilder("job")
+                    .leftJoinAndSelect("job.typeJobs", "typeJobs")
+                    .leftJoinAndSelect("job.location", "location")
+                    .leftJoinAndSelect("job.levelJob", "levelJob")
+                    .where("typeJobs.id IN (:...typeJobIds)", { typeJobIds: typeJobIdArrayCopy })
+                    .andWhere("job.status = :status", { status: Status.active })
+                    .andWhere("job.created_at <= CURRENT_TIMESTAMP") // chỉ lấy những job đã được tạo
+                    .andWhere("job.expire_at >= CURRENT_TIMESTAMP") // chỉ lấy những job chưa hết hạn
+                    .select(['job.id', 'job.created_at', 'job.updated_at', 'job.company_id', 'job.expire_at', 'job.title', 'job.salary', 'location', 'levelJob', 'typeJobs'])
+                    .orderBy("job.updated_at", "DESC")
+                    .take(6 - jobs.length)
+                    .getMany();
+                jobs = [...jobs, ...newJobs]
+                if (jobs.length == 6) {
+                    break;
+                }
+                typeJobIdArrayCopy = typeJobIdArrayCopy.slice(0, -1)
+            }
+
+            if (!jobs) {
+                throw new HttpException(this.i18n.t('err-message.errors.NotFound', { lang: I18nContext.current().lang }), HttpStatus.NOT_FOUND, { cause: "Not Found" })
+            }
+            for (let item of jobs) {
+                const company = await this.companyRepository.findOne({
+                    where: { id: item.company_id },
+                    relations: ['type_company'],
+                    select: ['id', 'logo', 'name'] // Thêm các quan hệ mà bạn muốn load
+                });
+                item.company = company;
+            }
+            return [...jobs];
+
+        } catch (error) {
+            console.log(error)
+            if (error instanceof HttpException) {
+                throw error
+            } else {
+                throw new HttpException(this.i18n.t('err-message.errors.databaseConnectFailed', { lang: I18nContext.current().lang }), HttpStatus.BAD_GATEWAY, { cause: "Bad Gateway" })
+            }
+
+        }
+
+    }
+
     async getJobByCompanyId(companyId: number, page: number, limit: number = 5) {
         try {
             const job = await this.jobRepository.createQueryBuilder("job")
@@ -93,6 +147,45 @@ export class JobService {
                 throw new HttpException(this.i18n.t('err-message.errors.NotFound', { lang: I18nContext.current().lang }), HttpStatus.NOT_FOUND, { cause: "Not Found" })
             }
             return { job, count };
+
+        } catch (error) {
+            console.log(error)
+            if (error instanceof HttpException) {
+                throw error
+            } else {
+                throw new HttpException(this.i18n.t('err-message.errors.databaseConnectFailed', { lang: I18nContext.current().lang }), HttpStatus.BAD_GATEWAY, { cause: "Bad Gateway" })
+            }
+
+        }
+
+    }
+
+    async getForHomePage() {
+        try {
+            const job = await this.jobRepository.createQueryBuilder("job")
+                .leftJoinAndSelect("job.location", "location")
+                .leftJoinAndSelect("job.levelJob", "levelJob")
+                .leftJoinAndSelect("job.typeJobs", "typeJobs")
+                .andWhere("job.status = :status", { status: Status.active })
+                .andWhere("job.created_at <= CURRENT_TIMESTAMP") // chỉ lấy những job đã được tạo
+                .andWhere("job.expire_at >= CURRENT_TIMESTAMP") // chỉ lấy những job chưa hết hạn
+                .select(['job.id', 'job.created_at', 'job.updated_at', 'job.company_id', 'job.expire_at', 'job.title', 'job.salary', 'location', 'levelJob', 'typeJobs'])
+                .orderBy("job.updated_at", "DESC")
+                .take(12)
+                .getMany();
+            if (!job.length) {
+                throw new HttpException(this.i18n.t('err-message.errors.NotFound', { lang: I18nContext.current().lang }), HttpStatus.NOT_FOUND, { cause: "Not Found" })
+            }
+            for (let item of job) {
+                const company = await this.companyRepository.findOne({
+                    where: { id: item.company_id },
+                    relations: ['type_company'],
+                    select: ['id', 'logo', 'name'] // Thêm các quan hệ mà bạn muốn load
+                });
+                item.company = company;
+            }
+
+            return [...job];
 
         } catch (error) {
             console.log(error)
@@ -149,7 +242,6 @@ export class JobService {
 
     async update(id: number, updateData: any) {
         try {
-            console.log(updateData)
             let typeJobs = []
             let job = await this.jobRepository.findOneBy({ id })
             if (updateData.typeJobs) {
