@@ -59,7 +59,6 @@ export class AuthenticateJWTMiddleware {
       const dataFromRedis = await this.redisService.redisClient.get(tokenCode);
       if (dataFromRedis != '{}' && dataFromRedis && decodedData !== 'null') {
         req.tokenData = JSON.parse(dataFromRedis);
-        // console.log('redis', req.tokenData)
         next();
       } else {
         let result = await this.authService.findById((decodedData as any).id, (decodedData as any).name ? "candidate" : "company");
@@ -73,7 +72,7 @@ export class AuthenticateJWTMiddleware {
           return res.status(HttpStatus.UNAUTHORIZED).json({ message: this.i18n.t('err-message.errors.TokenInvalid', { lang: I18nContext.current().lang }), error: 'Unauthorized' })
         }
         let fullData = await this.authService.findByIdToSave((decodedData as any).id, (decodedData as any).name ? "candidate" : "company");
-        await this.redisService.redisClient.set(tokenCode, JSON.stringify(fullData));
+        await this.redisService.redisClient.set(tokenCode, JSON.stringify({ ...fullData, exp: (decodedData as any).exp }));
         await this.redisService.redisClient.expireAt(tokenCode, (decodedData as any).exp);
         req.tokenData = { ...fullData, exp: (decodedData as any).exp };
         // console.log(req.tokenData)

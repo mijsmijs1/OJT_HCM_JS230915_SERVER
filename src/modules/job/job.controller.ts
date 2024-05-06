@@ -64,7 +64,7 @@ export class JobController {
         // Chuyển giá trị id thành một mảng gồm một phần tử
         idArray = [parseInt(String(req.query.typeJobId), 10)];
       }
-      let result = await this.jobService.getSearch(req.query.page ? Number(req.query.page) : 1, req.query.pageSize ? Number(req.query.pageSize) : 20, req.query.keyword ? String(req.query.keyword) : "all", req.query.address ? String(req.query.address) : "all", idArray)
+      let result = await this.jobService.getSearch(req.query.page ? Number(req.query.page) : 1, req.query.pageSize ? Number(req.query.pageSize) : 12, req.query.keyword ? String(req.query.keyword) : "all", req.query.address ? String(req.query.address) : "all", idArray, req.query.levelJobId ? Number(req.query.levelJobId) : 0, req.query.time ? String(req.query.time) : 'created_at')
       return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.job.getJobOK', { lang: I18nContext.current().lang }), data: result })
     } catch (err) {
       console.log(err)

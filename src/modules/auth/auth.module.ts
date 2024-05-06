@@ -21,7 +21,7 @@ export class AuthModule implements NestModule {
     consumer
       .apply(AuthenticateJWTMiddleware)
       .forRoutes(
-        { path: "auth/logout", method: RequestMethod.GET, version: '1' },
+        { path: "auth/logout", method: RequestMethod.POST, version: '1' },
         { path: "auth/check-token", method: RequestMethod.GET, version: '1' },
         { path: "auth/send-new-password", method: RequestMethod.GET, version: '1' },
         { path: "auth/active-account-candidate", method: RequestMethod.GET, version: '1' },

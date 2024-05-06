@@ -32,7 +32,8 @@
         "updateEducation": "Update Education Successfull",
         "updateExperience": "Update Experience Successfull",
         "updateProject": "Update Project Successfull",
-        "updateSkill": "Update Skill Successfull"
+        "updateSkill": "Update Skill Successfull",
+        "deleteEducation": "Delete Education Successfull"
     },
     "job": {
         "createJob": "Create Job Successfull",
