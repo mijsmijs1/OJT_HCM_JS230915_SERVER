@@ -405,7 +405,7 @@ export class CandidateService {
 
     async getSkillById(id: number) {
         try {
-            let data = await this.skillCandidateRepository.findOne({ where: { candidate_id: id } })
+            let data = await this.skillCandidateRepository.find({ where: { candidate_id: id } })
             return data;
         } catch (error) {
             if (error instanceof HttpException) {
@@ -418,7 +418,7 @@ export class CandidateService {
 
     async getCertificateById(id: number) {
         try {
-            let data = await this.certificateCandidateRepository.findOne({ where: { candidate_id: id } })
+            let data = await this.certificateCandidateRepository.find({ where: { candidate_id: id } })
             return data;
         } catch (error) {
             console.log(error)
@@ -432,7 +432,7 @@ export class CandidateService {
 
     async getEducationById(id: number) {
         try {
-            let data = await this.educationCandidateRepository.findOne({ where: { candidate_id: id } })
+            let data = await this.educationCandidateRepository.find({ where: { candidate_id: id } })
             return data;
         } catch (error) {
             if (error instanceof HttpException) {
@@ -445,7 +445,7 @@ export class CandidateService {
 
     async getExperienceById(id: number) {
         try {
-            let data = await this.experienceCandidateRepository.findOne({ where: { candidate_id: id } })
+            let data = await this.experienceCandidateRepository.find({ where: { candidate_id: id } })
             return data;
         } catch (error) {
             if (error instanceof HttpException) {
@@ -458,7 +458,7 @@ export class CandidateService {
 
     async getProjectById(id: number) {
         try {
-            let data = await this.projectCandidateRepository.findOne({ where: { candidate_id: id } })
+            let data = await this.projectCandidateRepository.find({ where: { candidate_id: id } })
             return data;
         } catch (error) {
             if (error instanceof HttpException) {
