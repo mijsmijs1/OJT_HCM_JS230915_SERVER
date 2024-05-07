@@ -32,7 +32,8 @@
         "updateEducation": "Cập nhật học vấn thành công",
         "updateExperience": "Cập nhật kinh nghiệm thành công",
         "updateProject": "Cập nhật dự án thành công",
-        "updateSkill": "Cập nhật kỹ năng thành công"
+        "updateSkill": "Cập nhật kỹ năng thành công",
+        "ApplyJobOk": "Ứng tuyển thành công, CV của bạn đã được gửi cho nhà tuyển dụng!"
     },
     "job": {
         "createJob": "Tạo công việc thành công",

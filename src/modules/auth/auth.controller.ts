@@ -211,7 +211,6 @@ export class AuthController {
       let result = await this.authService.update(req.tokenData.id, body, "candidate")
       if (result) {
         let newCandidate = await this.authService.findById(req.tokenData.id, 'candidate')
-        console.log(newCandidate)
         if (newCandidate) {
           const token_key = `bl_${req.header('Authorization')?.replace('Bearer ', '')}`;
           await this.redisService.redisClient.set(token_key, req.header('Authorization')?.replace('Bearer ', ''));
@@ -230,7 +229,6 @@ export class AuthController {
   @Post('/logout')
   async logout(@Req() req: RequestToken, @Body() body: { refreshToken: string }, @Res() res: Response) {
     try {
-      console.log(req.tokenData)
       const token_key = `bl_${req.header('Authorization')?.replace('Bearer ', '')}`;
       await this.redisService.redisClient.set(token_key, req.header('Authorization')?.replace('Bearer ', ''));
       this.redisService.redisClient.expireAt(token_key, Number(req.tokenData.exp));
@@ -253,7 +251,6 @@ export class AuthController {
   @Get('/job-application/:jobId')
   async getJobApplications(@Req() req: RequestToken, @Res() res: Response) {
     try {
-      console.log(req.tokenData)
       let result: any
       if (req.tokenData.name) {
         result = await this.authService.findJobApplicationsForCandidate(req.tokenData.id)
@@ -277,22 +274,25 @@ export class AuthController {
     try {
       const inDenyList = await this.redisService.redisClient.get(`bl_refresh_${body.refreshToken}`);
       if (inDenyList) {
+        console.log(1)
         throw new HttpException(this.i18n.t('err-message.errors.TokenInvalid', { lang: I18nContext.current().lang }), HttpStatus.UNAUTHORIZED, { cause: 'Unauthorized' })
-
       }
       let refreshTokenData = token.decodeRefreshToken(body.refreshToken);
       if (refreshTokenData) {
         let result = await this.authService.findByEmail((refreshTokenData as any).email, "all");
         if (!result) {
+          console.log(2)
           throw new HttpException(this.i18n.t('err-message.errors.TokenInvalid', { lang: I18nContext.current().lang }), HttpStatus.UNAUTHORIZED, { cause: 'Unauthorized' })
 
         }
         if ((refreshTokenData as any).updateAt != (result as any).updateAt) {
+          console.log(3)
           throw new HttpException(this.i18n.t('err-message.errors.TokenInvalid', { lang: I18nContext.current().lang }), HttpStatus.UNAUTHORIZED, { cause: 'Unauthorized' })
 
         }
         return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.auth.refreshTokenOk', { lang: I18nContext.current().lang }), accessToken: token.createToken(result) })
       }
+      console.log(4)
       throw new HttpException(this.i18n.t('err-message.errors.TokenInvalid', { lang: I18nContext.current().lang }), HttpStatus.UNAUTHORIZED, { cause: 'Unauthorized' })
     } catch (err) {
       if (err instanceof HttpException) {
@@ -348,7 +348,6 @@ export class AuthController {
   @Delete('delete-account')
   async deleteAccount(@Req() req: RequestToken, @Body() body: { email: string, role: string }, @Res() res: Response) {
     try {
-      console.log(req.tokenData)
       if (req.tokenData.email != body.email) {
         throw new HttpException(this.i18n.t('err-message.errors.NotFound', { lang: I18nContext.current().lang }), HttpStatus.UNAUTHORIZED, { cause: 'Not Found' })
       }

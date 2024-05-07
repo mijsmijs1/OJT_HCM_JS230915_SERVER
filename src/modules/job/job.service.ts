@@ -57,10 +57,15 @@ export class JobService {
 
     async getById(jobId: number) {
         try {
-            let job = await this.jobRepository.findOne({
-                where: { id: jobId },
-                relations: ['typeJobs', 'location', 'levelJob'] // Thêm các quan hệ mà bạn muốn load
-            });
+            let job = await this.jobRepository.createQueryBuilder("job")
+                .leftJoinAndSelect("job.typeJobs", "typeJobs")
+                .leftJoinAndSelect("job.location", "location")
+                .leftJoinAndSelect("job.levelJob", "levelJob")
+                .leftJoinAndSelect("job.candidates", "candidates")
+                .leftJoin("job.company", "company")
+                .addSelect(["company.id", "company.logo", "company.name"])
+                .where("job.id = :id", { id: jobId })
+                .getOne();
 
             if (!job) {
                 throw new HttpException(this.i18n.t('err-message.errors.NotFound', { lang: I18nContext.current().lang }), HttpStatus.NOT_FOUND, { cause: "Not Found" })
@@ -81,7 +86,6 @@ export class JobService {
 
     async getJobByTypeJob(typeJobIdArray: number[]) {
         try {
-            console.log(typeJobIdArray)
             let jobs = [];
             let typeJobIdArrayCopy = [...typeJobIdArray];
             for (let i = 0; i < typeJobIdArray.length; i++) {
@@ -246,7 +250,6 @@ export class JobService {
             let job = await this.jobRepository.findOneBy({ id })
             if (updateData.typeJobs) {
                 typeJobs = await this.typeJobRepository.findBy({ id: In(updateData.typeJobs) })
-                console.log('typeJobs tertere', typeJobs)
                 job.typeJobs = typeJobs
                 delete updateData.typeJobs
             }

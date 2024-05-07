@@ -29,7 +29,6 @@ export class RoleGuard implements CanActivate { //Đây là một interface tron
 
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET) as DecodedToken; // Ép kiểu cho decoded
-      console.log(decoded, 'decoded');
       request.user = decoded;
       const check = (+decoded.role === Role.candidate) || (+decoded.role === Role.company) ? true : false;
       return check

@@ -36,6 +36,7 @@ export const token = {
             }
             return false;
         } catch (err) {
+            console.log('err', err)
             return false;
         }
     }

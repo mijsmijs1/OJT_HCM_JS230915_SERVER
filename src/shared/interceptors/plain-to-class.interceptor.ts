@@ -28,7 +28,6 @@ export class PlainToClassTransformInterceptor<T>  //T được sử dụng như 
           map(error => {
             console.log(error);
             if (error.length > 0) {
-              console.log(error[0]?.children[0]);
               httpInternalServerErrorException();
             }
             return data;

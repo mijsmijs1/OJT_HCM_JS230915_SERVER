@@ -53,6 +53,7 @@ export class CompanyService {
             newCompany.name = createData.name;
             createData.website && (newCompany.website = createData.website);
             createData.logo && (newCompany.logo = createData.logo);
+            createData.size && (newCompany.size = createData.size);
             createData.type_company_id && (newCompany.type_company_id = createData.type_company_id);
             createData.link_fb && (newCompany.link_fb = createData.link_fb);
             createData.link_linkedin && (newCompany.link_linkedin = createData.link_linkedin);
@@ -295,7 +296,6 @@ export class CompanyService {
     }
 
     async getSearch(page: number, pageSize: number, keyword: string, address: string) {
-        console.log(page, pageSize, keyword, address)
         try {
             let skip = 0;
             if (page > 1) {
