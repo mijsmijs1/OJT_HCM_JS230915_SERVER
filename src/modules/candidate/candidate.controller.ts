@@ -6,7 +6,7 @@ import { RedisService } from 'src/shared/utils/redis/redis';
 import { MailService } from 'src/shared/utils/mail/mail.service';
 import { RequestToken } from 'src/shared/middleware/authen-jwr.middleware';
 import { CreateCertificateCandidateDTO } from './dtos/create-certificate.dto';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { CreateEducationCandidateDTO } from './dtos/create-education.dto';
 import { CreateExperienceCandidateDTO } from './dtos/create-experience.dto';
 import { CreateProjectCandidateDTO } from './dtos/create-project.dto';
@@ -34,7 +34,7 @@ export class CandidateController {
     try {
       let result = await this.candidateService.createJobApplication({ ...body, candidate_id: Number(req.tokenData.id) })
       if (result) {
-        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.candidate.createCertificate', { lang: I18nContext.current().lang }), data: { ...result } })
+        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.candidate.ApplyJobOk', { lang: I18nContext.current().lang }), data: { ...result } })
       }
     }
     catch (err) {
@@ -299,6 +299,151 @@ export class CandidateController {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
     }
   }
+
+  @Get('/skill/:candidateId')
+  async getSkillById(@Req() req: Request, @Res() res: Response) {
+    try {
+      let result = await this.candidateService.getSkillById(Number(req.params.candidateId))
+      if (result) {
+        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.candidate.updateSkill', { lang: I18nContext.current().lang }), data: { ...result } })
+      }
+    }
+    catch (err) {
+      if (err instanceof HttpException) {
+        return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
+      }
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
+    }
+  }
+
+  @Get('/certificate/:candidateId')
+  async getCertificateById(@Req() req: Request, @Res() res: Response) {
+    try {
+      let result = await this.candidateService.getCertificateById(Number(req.params.candidateId))
+      if (result) {
+        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.candidate.updateSkill', { lang: I18nContext.current().lang }), data: { ...result } })
+      }
+    }
+    catch (err) {
+      if (err instanceof HttpException) {
+        return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
+      }
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
+    }
+  }
+
+  @Get('/experience/:candidateId')
+  async getExperienceById(@Req() req: Request, @Res() res: Response) {
+    try {
+      let result = await this.candidateService.getExperienceById(Number(req.params.candidateId))
+      if (result) {
+        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.candidate.updateSkill', { lang: I18nContext.current().lang }), data: { ...result } })
+      }
+    }
+    catch (err) {
+      if (err instanceof HttpException) {
+        return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
+      }
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
+    }
+  }
+
+  @Get('/project/:candidateId')
+  async getProjectById(@Req() req: Request, @Res() res: Response) {
+    try {
+      let result = await this.candidateService.getProjectById(Number(req.params.candidateId))
+      if (result) {
+        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.candidate.updateSkill', { lang: I18nContext.current().lang }), data: { ...result } })
+      }
+    }
+    catch (err) {
+      if (err instanceof HttpException) {
+        return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
+      }
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
+    }
+  }
+
+  @Get('/education/:candidateId')
+  async getEducationById(@Req() req: Request, @Res() res: Response) {
+    try {
+      let result = await this.candidateService.getEducationById(Number(req.params.candidateId))
+      if (result) {
+        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.candidate.updateSkill', { lang: I18nContext.current().lang }), data: { ...result } })
+      }
+    }
+    catch (err) {
+      if (err instanceof HttpException) {
+        return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
+      }
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
+    }
+  }
+
+  @Get('/get-applied-job')
+  async getAppliedJob(@Req() req: RequestToken, @Res() res: Response) {
+    try {
+      let result = await this.candidateService.getAppliedJob(Number(req.tokenData.id), req.query.page ? Number(req.query.page) : 1, req.query.pageSize ? Number(req.query.pageSize) : 9)
+      if (result) {
+        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.candidate.GetAplliedJobOk', { lang: I18nContext.current().lang }), data: result })
+      }
+    }
+    catch (err) {
+      if (err instanceof HttpException) {
+        return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
+      }
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
+    }
+  }
+
+  @Get('/get-applied-candidate/:jobId/get')
+  async getAppliedCandidate(@Req() req: RequestToken, @Res() res: Response) {
+    try {
+      let result = await this.candidateService.getAppliedCandidate(Number(req.params.jobId), req.query.page ? Number(req.query.page) : 1, req.query.pageSize ? Number(req.query.pageSize) : 9)
+      if (result) {
+        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.candidate.GetAplliedCandidateOk', { lang: I18nContext.current().lang }), data: result })
+      }
+    }
+    catch (err) {
+      if (err instanceof HttpException) {
+        return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
+      }
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
+    }
+  }
+
+  @Get('/get-CV')
+  async getCV(@Req() req: RequestToken, @Res() res: Response) {
+    try {
+      let result = await this.candidateService.getCV(Number(req.query.candidateId), Number(req.query.jobId))
+      if (result) {
+        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.candidate.GetCVOk', { lang: I18nContext.current().lang }), data: result })
+      }
+    }
+    catch (err) {
+      if (err instanceof HttpException) {
+        return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
+      }
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
+    }
+  }
+
+  @Get('/get-candidate-by-id/:candidateId')
+  async getCandidateById(@Req() req: RequestToken, @Res() res: Response) {
+    try {
+      let result = await this.candidateService.getById(Number(req.params.candidateId))
+      if (result) {
+        return res.status(HttpStatus.OK).json({ message: this.i18n.t('success-message.candidate.GetCandidateOk', { lang: I18nContext.current().lang }), data: result })
+      }
+    }
+    catch (err) {
+      if (err instanceof HttpException) {
+        return res.status(err.getStatus()).json({ message: err.getResponse().toString(), error: err.cause })
+      }
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: this.i18n.t("err-message.errors.serverError", { lang: I18nContext.current().lang }), error: 'InternalServerError' })
+    }
+  }
+
   @Delete('/delete-education/:id')
   async deleteEducation(@Req() req: RequestToken, @Res() res: Response) {
     try {

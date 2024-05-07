@@ -10,7 +10,7 @@ export class Jobs_Candidates {
     @Column({ type: 'varchar', length: 255 })
     cv_url: string;
 
-    @Column({ type: 'varchar', length: 255 })
+    @Column({ type: 'text' })
     content: string;
 
     @Column({ type: 'int', default: 1 })

@@ -15,9 +15,11 @@ import { ProjectCandidate } from './database/project_candidate.entity';
 import { SkillsCandidate } from './database/skill_candidate.entity';
 import { Account_Company } from '../company/database/account_company.entity';
 import { Jobs_Candidates } from '../job/database/jobs_candidates.entity';
+import { Job } from '../job/database/job.entity';
+import { Company } from '../company/database/company.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Candidate, CertificateCandidate, EducationCandidate, ExperienceCandidate, ProjectCandidate, SkillsCandidate, Account_Company, Jobs_Candidates])],
+  imports: [TypeOrmModule.forFeature([Company, Candidate, Job, CertificateCandidate, EducationCandidate, ExperienceCandidate, ProjectCandidate, SkillsCandidate, Account_Company, Jobs_Candidates])],
   controllers: [CandidateController],
   providers: [CandidateService, RedisService, MailService, AuthService],
 })
@@ -37,6 +39,10 @@ export class CandidateModule implements NestModule {
         { path: "candidate/update-experience/:id", method: RequestMethod.PATCH, version: '1' },
         { path: "candidate/update-project/:id", method: RequestMethod.PATCH, version: '1' },
         { path: "candidate/update-skill/:id", method: RequestMethod.PATCH, version: '1' },
+        { path: "candidate/get-applied-job", method: RequestMethod.GET, version: '1' },
+        { path: "candidate/get-candidate-by-id/:candidateId", method: RequestMethod.GET, version: '1' },
+        { path: "candidate/get-applied-candidate/:jobId/get", method: RequestMethod.GET, version: '1' },
+        { path: "candidate/get-CV", method: RequestMethod.GET, version: '1' },
         { path: "candidate/skill", method: RequestMethod.GET, version: '1' },
         { path: "candidate/certificate", method: RequestMethod.GET, version: '1' },
         { path: "candidate/education", method: RequestMethod.GET, version: '1' },

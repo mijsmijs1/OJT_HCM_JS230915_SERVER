@@ -33,7 +33,12 @@
         "updateExperience": "Update Experience Successfull",
         "updateProject": "Update Project Successfull",
         "updateSkill": "Update Skill Successfull",
-        "deleteEducation": "Delete Education Successfull"
+        "deleteEducation": "Delete Education Successfull",
+        "ApplyJobOk": "Apply Job Successfull",
+        "GetAplliedCandidateOk": "Get Applied Candidate Successfull",
+        "GetCandidateOk": "Get Candidate Successfull",
+        "GetCVOk": "Get CV Successfull",
+        "GetAplliedJobOk": "Get Applied Job Successfull"
     },
     "job": {
         "createJob": "Create Job Successfull",

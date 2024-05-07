@@ -16,7 +16,7 @@ export class CreateJobsCandidatesDto {
         description: 'Content related to the job application',
         required: true,
     })
-    @IsNotEmpty({ message: 'Content must not be empty' })
+    @IsNotEmpty({ message: 'validation.COMMON_ERROR' })
     @IsString({ message: 'validation.COMMON_ERROR' })
     content: string;
 
@@ -25,7 +25,7 @@ export class CreateJobsCandidatesDto {
         description: 'ID of the job the candidate is applying for',
         required: true,
     })
-    @IsNotEmpty({ message: 'Job ID must not be empty' })
+    @IsNotEmpty({ message: 'validation.COMMON_ERROR' })
     @IsInt({ message: 'validation.COMMON_ERROR' })
     job_id: number;
 
